@@ -1,0 +1,97 @@
+.magic-bento-card {
+  --magic-glow-color: 206, 229, 244;
+  --glow-x: 50%;
+  --glow-y: 50%;
+  --glow-intensity: 0;
+  --glow-radius: 320px;
+  position: relative;
+  overflow: hidden;
+  transform-style: preserve-3d;
+}
+
+.magic-bento-card::after {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  padding: 1px;
+  border-radius: inherit;
+  background: radial-gradient(
+    var(--glow-radius) circle at var(--glow-x) var(--glow-y),
+    rgba(var(--magic-glow-color), calc(var(--glow-intensity) * 0.8)) 0%,
+    rgba(var(--magic-glow-color), calc(var(--glow-intensity) * 0.34)) 32%,
+    transparent 62%
+  );
+  content: '';
+  pointer-events: none;
+  opacity: 0.9;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+}
+
+.magic-bento-card::before {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  background: radial-gradient(
+    var(--glow-radius) circle at var(--glow-x) var(--glow-y),
+    rgba(var(--magic-glow-color), calc(var(--glow-intensity) * 0.16)),
+    transparent 58%
+  );
+  content: '';
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+.magic-particle,
+.magic-ripple {
+  position: absolute;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.magic-particle {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(var(--magic-glow-color), 0.96);
+  box-shadow: 0 0 10px rgba(var(--magic-glow-color), 0.72);
+}
+
+.magic-ripple {
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(var(--magic-glow-color), 0.28) 0%,
+    rgba(var(--magic-glow-color), 0.12) 32%,
+    transparent 70%
+  );
+}
+
+.magic-global-spotlight {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 9;
+  width: 680px;
+  height: 680px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(var(--magic-glow-color), 0.12) 0%,
+    rgba(var(--magic-glow-color), 0.06) 20%,
+    rgba(var(--magic-glow-color), 0.025) 42%,
+    transparent 70%
+  );
+  mix-blend-mode: screen;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  will-change: left, top, opacity;
+}
