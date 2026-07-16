@@ -222,6 +222,9 @@ img {
   transition:
     opacity 260ms ease,
     transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  padding: 0;
+  border: 0;
+  cursor: pointer;
 }
 
 .sidebar-shell.is-collapsed .sidebar-edge-indicator {
@@ -1790,6 +1793,84 @@ h1 {
   }
 }
 
+@media (max-width: 1024px) {
+  body {
+    min-width: 0;
+  }
+
+  .page-shell,
+  .case-study-shell {
+    width: min(calc(100% - 48px), var(--max));
+  }
+
+  .hero-editorial {
+    padding-top: 104px;
+  }
+
+  .hero-topline {
+    top: 84px;
+    width: min(680px, calc(100% - 96px));
+  }
+
+  .hero-gallery {
+    right: 0;
+    bottom: 40px;
+    width: min(760px, 76vw);
+    height: 340px;
+  }
+
+  .experience,
+  .projects,
+  .personal-projects,
+  .toolbox {
+    padding: 96px 0;
+  }
+
+  .section-header {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .toolbox-layout {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+
+  .toolbox-editorial {
+    position: static;
+    padding: 0;
+  }
+
+  .toolbox-editorial h2 {
+    font-size: clamp(70px, 11vw, 96px);
+  }
+
+  .cinematic-media-card {
+    width: 100%;
+  }
+
+  .case-study-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .case-study-visual {
+    min-height: 420px;
+  }
+
+  .case-study-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .case-study-process,
+  .case-study-process-structured {
+    grid-template-columns: 1fr;
+  }
+
+  .case-study-process-structured h2 {
+    position: static;
+  }
+}
+
 @media (max-width: 760px) {
   body {
     min-width: 0;
@@ -1841,6 +1922,93 @@ h1 {
     width: min(calc(100% - 32px), var(--max));
   }
 
+  .hero {
+    min-height: 100svh;
+  }
+
+  .hero-editorial {
+    min-height: 100svh;
+    padding: 0;
+  }
+
+  .hero-topline {
+    top: 72px;
+    left: 0;
+    right: 0;
+    width: 100%;
+    padding: 0 18px;
+    transform: none;
+  }
+
+  .hero-topline span {
+    font-size: 10px;
+  }
+
+  h1 {
+    font-size: clamp(30px, 9vw, 38px);
+  }
+
+  .hero-tagline {
+    max-width: 280px;
+    margin-top: 10px;
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  .hero-gallery {
+    right: 50%;
+    bottom: max(24px, env(safe-area-inset-bottom));
+    width: calc(100vw - 24px);
+    height: min(46svh, 390px);
+    border-radius: 6px;
+    transform: translateX(50%);
+    mask-image: linear-gradient(90deg, transparent 0%, black 6%, black 94%, transparent 100%);
+  }
+
+  .experience,
+  .projects,
+  .personal-projects,
+  .toolbox {
+    padding: 72px 0;
+    scroll-margin-top: 16px;
+  }
+
+  .section-header {
+    margin-bottom: 30px;
+  }
+
+  .project-grid,
+  .personal-project-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .project-card:hover,
+  .toolbox-card:hover {
+    transform: none;
+  }
+
+  .project-image {
+    aspect-ratio: 16 / 10;
+  }
+
+  .personal-project-visual {
+    min-height: 240px;
+  }
+
+  .project-content {
+    padding: 22px;
+  }
+
+  .project-content h3 {
+    font-size: 27px;
+  }
+
+  .project-content p,
+  .project-bullets {
+    font-size: 15px;
+  }
+
   .toolbox-layout {
     grid-template-columns: 1fr;
     gap: 38px;
@@ -1886,6 +2054,10 @@ h1 {
     padding: 24px;
   }
 
+  .case-study-back {
+    min-height: 44px;
+  }
+
   .case-study-copy h1 {
     font-size: clamp(42px, 14vw, 68px);
   }
@@ -1895,7 +2067,8 @@ h1 {
   }
 
   .case-study-visual {
-    min-height: 520px;
+    min-height: 0;
+    aspect-ratio: 4 / 3;
   }
 
   .case-study-stats {
@@ -1904,6 +2077,34 @@ h1 {
 
   .case-study-grid,
   .case-study-process {
+    grid-template-columns: 1fr;
+  }
+
+  .case-study-stats div {
+    min-height: 104px;
+    padding: 18px;
+  }
+
+  .case-study-stats strong {
+    font-size: 27px;
+  }
+
+  .case-study-panel {
+    padding: 22px;
+  }
+
+  .case-study-panel p {
+    margin-top: 18px;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .case-study-problems article,
+  .case-study-problems .case-study-experiment-structured {
+    padding: 20px;
+  }
+
+  .case-study-experiment-flow {
     grid-template-columns: 1fr;
   }
 
@@ -1930,13 +2131,13 @@ h1 {
 
   .cinematic-profile-shell {
     min-height: auto;
-    padding: 64px 0 44px;
+    padding: 24px 0 420px;
   }
 
   .cinematic-media-card {
     width: 100%;
-    min-height: 720px;
-    border-radius: 16px;
+    min-height: 660px;
+    border-radius: 12px;
   }
 
   .cinematic-topbar {
@@ -1948,16 +2149,16 @@ h1 {
   }
 
   .cinematic-person-cutout {
-    right: -18%;
-    bottom: 88px;
-    width: min(360px, 82vw);
-    height: 520px;
-    opacity: 0.86;
+    right: -25%;
+    bottom: 46px;
+    width: min(340px, 88vw);
+    height: 480px;
+    opacity: 0.68;
   }
 
   .cinematic-copy {
     left: 24px;
-    top: 128px;
+    top: 116px;
     max-width: calc(100% - 48px);
   }
 
@@ -1966,8 +2167,10 @@ h1 {
   }
 
   .cinematic-copy p {
-    max-width: 280px;
-    font-size: 15px;
+    max-width: min(290px, 76vw);
+    margin-top: 18px;
+    font-size: 14px;
+    line-height: 1.52;
   }
 
   .cinematic-contact-strip {
@@ -1977,20 +2180,70 @@ h1 {
   }
 
   .cinematic-episode-list {
-    position: relative;
+    position: absolute;
     top: auto;
-    right: auto;
+    right: 0;
+    bottom: -386px;
     z-index: 9;
     width: 100%;
-    margin-top: 18px;
+    margin: 0;
+    gap: 10px;
   }
 
   .cinematic-episode-card {
-    grid-template-columns: 1fr 108px;
+    grid-template-columns: minmax(0, 1fr) 112px;
+    min-height: 82px;
+    padding: 8px 8px 8px 16px;
+  }
+
+  .cinematic-episode-thumbnail {
+    width: 112px;
+    height: 64px;
   }
 
   .cinematic-episode-preview {
     display: none;
   }
 
+  .cinematic-contact-strip {
+    gap: 6px;
+  }
+
+  .cinematic-contact-strip span {
+    min-height: 36px;
+    padding: 0 10px;
+    font-size: 11px;
+  }
+
+  .site-footer {
+    width: calc(100% - 32px);
+    padding-bottom: calc(30px + env(safe-area-inset-bottom));
+  }
+
+  .site-footer-links a {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+}
+
+@media (max-width: 420px) {
+  .case-study-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .toolbox-card {
+    grid-template-columns: 44px minmax(0, 1fr);
+    min-height: 124px;
+    padding: 18px 16px;
+  }
+
+  .toolbox-icon {
+    width: 42px;
+    height: 42px;
+  }
+
+  .cinematic-copy h2 {
+    font-size: clamp(52px, 17vw, 72px);
+  }
 }

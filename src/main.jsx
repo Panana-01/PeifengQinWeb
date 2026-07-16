@@ -647,7 +647,9 @@ function ProjectCaseStudyPage({ caseStudy }) {
 }
 
 function App() {
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(
+    () => window.matchMedia('(max-width: 760px)').matches || window.scrollY > 80
+  );
   const [currentHash, setCurrentHash] = useState(() => window.location.hash);
   const navItems = useMemo(
     () => [
@@ -665,7 +667,7 @@ function App() {
     const handleScroll = () => {
       if (frameId) return;
       frameId = window.requestAnimationFrame(() => {
-        const shouldCollapse = window.scrollY > 80;
+        const shouldCollapse = window.scrollY > 80 || window.matchMedia('(max-width: 760px)').matches;
         setIsSidebarCollapsed((current) => (current === shouldCollapse ? current : shouldCollapse));
         frameId = 0;
       });
@@ -719,7 +721,12 @@ function App() {
           onMouseEnter={showSidebar}
           onMouseLeave={collapseSidebarAfterHover}
         >
-          <span className="sidebar-edge-indicator" aria-hidden="true" />
+          <button
+            className="sidebar-edge-indicator"
+            type="button"
+            aria-label="Open navigation"
+            onClick={showSidebar}
+          />
           <header className="site-nav">
             <a className="brand" href="#top" aria-label="Go to top">
               <span className="brand-mark">PQ</span>

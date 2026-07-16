@@ -8,7 +8,8 @@ const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)'
 
 function PortfolioMotion() {
   useLayoutEffect(() => {
-    if (reducedMotion()) return undefined;
+    const compactViewport = window.matchMedia('(max-width: 760px)').matches;
+    if (reducedMotion() || compactViewport) return undefined;
 
     const ctx = gsap.context(() => {
       const slowEase = 'expo.out';
