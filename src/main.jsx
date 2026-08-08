@@ -9,6 +9,7 @@ import {
 import MagicBentoEffects from './MagicBentoEffects';
 import PortfolioMotion from './PortfolioMotion';
 import CircularGallery from './CircularGallery';
+import VenemCaseStudyPage from './VenemCaseStudyPage';
 import './styles.css';
 
 const profile = {
@@ -37,7 +38,7 @@ const projects = [
   {
     title: 'Ethnography Study for a Shared Meal',
     detailHash: '#shared-meal-ethnography',
-    meta: 'Ethnomethodological HCI Study · 2026',
+    meta: 'Ethnomethodological HCI Study 路 2026',
     image: '/assets/project-meal-photo.webp',
     tags: ['Ethnography', 'Interaction Analysis', 'Design Implications'],
     description:
@@ -78,14 +79,14 @@ const personalProjects = [
     tags: ['AI Workflow', 'Video Editing', 'Audience Analytics']
   },
   {
-    title: 'Automated Stock Research Assistant',
+    title: 'Rule-based quantitative trading stimulation',
     meta: 'Python Automation · Personal Project',
     visual: 'stock',
-    image: '/assets/personal-stock-research-report.png',
+    image: '/assets/personal-alpaca-paper-trading.png',
     detailHash: '#stock-research-assistant',
     bullets: [
-      'Built a Python-based automation tool to monitor a personalised US stock watchlist and generate daily Markdown research reports.',
-      'Combined market-data screening with AI-assisted Chinese analysis summaries, while accounting for time zones and non-trading periods.'
+      'An end-to-end unattended workflow using Codex Scheduled Tasks and the authenticated Alpaca Paper Trading API to collect data, conduct web research, generate structured decisions, and automatically execute eligible simulated trades on US trading days; currently undergoing forward testing in a paper-trading environment.',
+      'Built a hybrid agent-deterministic architecture with schema-validated interfaces, fail-closed safeguards, SQLite audit logging, and offline test scenarios for reliable and traceable execution.'
     ],
     tags: ['Python', 'Markdown Reports', 'Market Screening']
   }
@@ -115,12 +116,6 @@ const profileEpisodes = [
     title: 'Camping',
     duration: '',
     image: '/assets/profile-camping.jpg'
-  },
-  {
-    number: '04',
-    title: 'Swimming',
-    duration: '',
-    image: '/assets/profile-swimming.jpg'
   }
 ];
 
@@ -220,9 +215,10 @@ const douyinCaseStudy = {
 };
 
 const stockCaseStudy = {
+  hash: '#stock-research-assistant',
   title: 'Automated Stock Research Assistant',
   eyebrow: 'Python Automation / AI Research Workflow / Personal Project',
-  image: '/assets/personal-stock-research-report.png',
+  image: '/assets/personal-alpaca-paper-trading.png',
   visualMode: 'contain',
   processEyebrow: 'Cost-Aware Automation Workflow',
   processTitle: 'Turning an API-cost constraint into a sustainable daily research workflow.',
@@ -542,6 +538,8 @@ function CinematicProfileHero({ profileData, backgroundImage, personCutoutImage,
 }
 
 function ProjectCaseStudyPage({ caseStudy }) {
+  const isStockResearchCaseStudy = caseStudy.hash === '#stock-research-assistant';
+
   return (
     <div className="case-study-page">
       <div className="case-study-shell">
@@ -554,7 +552,7 @@ function ProjectCaseStudyPage({ caseStudy }) {
           className={`case-study-hero magic-bento-card${caseStudy.heroBackground ? ' case-study-hero-background' : ''}`}
           style={caseStudy.heroBackground ? { '--case-study-background': `url(${caseStudy.image})` } : undefined}
         >
-          <div className="case-study-copy">
+          <div className={`case-study-copy${isStockResearchCaseStudy ? ' case-study-copy-stock' : ''}`}>
             <span className="eyebrow">{caseStudy.eyebrow}</span>
             <h1>{caseStudy.title}</h1>
             <p>{caseStudy.summary}</p>
@@ -747,7 +745,11 @@ function App() {
         </div>
       )}
       {isCaseStudy ? (
-        <ProjectCaseStudyPage caseStudy={activeCaseStudy} />
+        currentHash === '#kitchen-inventory-chatbot' ? (
+          <VenemCaseStudyPage />
+        ) : (
+          <ProjectCaseStudyPage caseStudy={activeCaseStudy} />
+        )
       ) : (
       <>
       <section className="hero" id="top">
