@@ -8,14 +8,99 @@ import {
 } from 'lucide-react';
 import MagicBentoEffects from './MagicBentoEffects';
 import PortfolioMotion from './PortfolioMotion';
-import CircularGallery from './CircularGallery';
 import VenemCaseStudyPage from './VenemCaseStudyPage';
+import PixelStarfield from './PixelStarfield';
+import ASCIIText from './ASCIIText';
+import GlitchCheckbox from './GlitchCheckbox';
 import './styles.css';
+
+const heroAsciiText = 'Hey! Thank you for coming here';
+
+const drawAboutSignpostTexture = (context, canvas, { text, color, fontFamily }) => {
+  const { width, height } = canvas;
+  const boardTop = height * 0.08;
+  const boardBottom = height * 0.64;
+  const boardMiddle = (boardTop + boardBottom) / 2;
+  const postX = width * 0.47;
+
+  context.save();
+  context.strokeStyle = color;
+  context.fillStyle = color;
+  context.lineWidth = Math.max(5, height * 0.018);
+  context.lineJoin = 'miter';
+  context.lineCap = 'square';
+
+  context.beginPath();
+  context.moveTo(postX, boardBottom);
+  context.lineTo(postX, height * 0.96);
+  context.stroke();
+
+  context.beginPath();
+  context.moveTo(width * 0.06, boardTop);
+  context.lineTo(width * 0.78, boardTop);
+  context.lineTo(width * 0.96, boardMiddle);
+  context.lineTo(width * 0.78, boardBottom);
+  context.lineTo(width * 0.06, boardBottom);
+  context.lineTo(width * 0.12, boardMiddle);
+  context.closePath();
+  context.stroke();
+
+  context.font = `700 ${Math.round(height * 0.17)}px ${fontFamily}`;
+  context.textAlign = 'center';
+  context.textBaseline = 'middle';
+  context.fillText(text, width * 0.48, boardMiddle);
+  context.restore();
+};
+
+class HeroAsciiSafe extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { failed: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+
+  componentDidCatch(error) {
+    console.error('ASCIIText crashed', error);
+  }
+
+  render() {
+    if (this.state.failed) {
+      return this.props.fallback || <p className="hero-ascii-fallback">{heroAsciiText}</p>;
+    }
+    return this.props.children;
+  }
+}
+
+function NavAsciiLabel({ text, className = '' }) {
+  const shouldStackWords = text.includes(' ') && text.length > 9;
+  const effectText = shouldStackWords ? text.replace(' ', '\n') : text;
+
+  return (
+    <span
+      className={`nav-ascii-label${shouldStackWords ? ' is-stacked' : ''}${className ? ` ${className}` : ''}`}
+      aria-hidden="true"
+    >
+      <HeroAsciiSafe fallback={<span className="nav-ascii-label-fallback">{text}</span>}>
+        <ASCIIText
+          text={effectText}
+          enableWaves={false}
+          asciiFontSize={1}
+          textFontSize={140}
+          textColor="#fdf9f3"
+          planeBaseHeight={20}
+        />
+      </HeroAsciiSafe>
+    </span>
+  );
+}
 
 const profile = {
   name: 'Peifeng Qin',
   title: 'Human-Computer Interaction Designer',
-  tagline: 'Conversational AI · Mixed Reality · User Research · Interactive Prototyping',
+  tagline: 'Hi, welcome to my portfolio!',
   email: 'peifengqin01@163.com',
   phone: '7780 813859',
   location: 'Nottingham, UK',
@@ -24,95 +109,59 @@ const profile = {
 
 const profilePhoto = '/assets/profile-rain-photo.jpg';
 const personCutout = profilePhoto;
+const aboutMeHash = '#about-me';
+const aboutMeLabel = 'About me';
 
 const projects = [
   {
     title: 'Kitchen Inventory Chatbot',
     detailHash: '#kitchen-inventory-chatbot',
-    meta: 'Interactive NLP-Based AI System · 2025',
-    image: '/assets/project-chatbot-screenshot.png',
-    tags: ['Python', 'TF-IDF', 'Dialogue Logic'],
-    description:
-      'A Python-based NLP chatbot for kitchen inventory management, combining intent recognition, inventory actions, contextual help, small talk, and personalized responses.'
+    image: '/assets/project-chatbot-screenshot.png'
   },
   {
     title: 'Ethnography Study for a Shared Meal',
     detailHash: '#shared-meal-ethnography',
-    meta: 'Ethnomethodological HCI Study 路 2026',
-    image: '/assets/project-meal-photo.webp',
-    tags: ['Ethnography', 'Interaction Analysis', 'Design Implications'],
-    description:
-      'A field research project across shared-meal sessions, documenting talk, gesture, spatial layout, tools, and coordination patterns in domestic settings.'
+    image: '/assets/project-meal-photo.webp'
   },
   {
     title: 'Chaotic Rehab Clinic',
     detailHash: '#chaotic-rehab-clinic',
-    meta: 'Unity Game Prototype · 2026',
-    image: '/assets/project-rehab-screenshot.png',
-    tags: ['Unity', 'Game Loop', 'Simulation'],
-    description:
-      'A rehabilitation clinic simulation game featuring diagnosis, exercise selection, posture and equipment correction, treatment feedback, payment, and clinic upgrades.'
+    image: '/assets/project-rehab-screenshot.png'
   },
   {
     title: 'Attack and Defend',
     detailHash: '#attack-and-defend',
-    meta: 'VR/MR Game Prototype · 2026',
-    image: '/assets/project-attack-defend-screenshot.png',
-    tags: ['VR/MR', 'Unity', 'Playtesting'],
-    description:
-      'An asymmetric two-player VR/MR game designed for an apartment common area, with routing, spawning, shooting, health systems, and safety-aware play boundaries.'
+    image: '/assets/project-attack-defend-screenshot.png'
   }
 ];
 
 const personalProjects = [
   {
     title: 'English Learning Content Account on Douyin',
-    meta: 'Content Production · Personal Project',
     visual: 'douyin',
     image: '/assets/personal-douyin-account.jpg',
-    detailHash: '#douyin-content-account',
-    bullets: [
-      'Produced educational videos from English-language media clips and refined video structure through audience retention and completion-rate analysis.',
-      'Built an AI-assisted production workflow using PotPlayer, whisper.cpp, Large-v3-turbo, and ChatGPT to streamline subtitle extraction and explanation drafting.',
-      'Grew the account to 8,000 followers within 4 months, with the best-performing video reaching 1.43 million views.'
-    ],
-    tags: ['AI Workflow', 'Video Editing', 'Audience Analytics']
+    detailHash: '#douyin-content-account'
   },
   {
     title: 'Rule-based quantitative trading stimulation',
-    meta: 'Python Automation · Personal Project',
     visual: 'stock',
     image: '/assets/personal-alpaca-paper-trading.png',
-    detailHash: '#stock-research-assistant',
-    bullets: [
-      'An end-to-end unattended workflow using Codex Scheduled Tasks and the authenticated Alpaca Paper Trading API to collect data, conduct web research, generate structured decisions, and automatically execute eligible simulated trades on US trading days; currently undergoing forward testing in a paper-trading environment.',
-      'Built a hybrid agent-deterministic architecture with schema-validated interfaces, fail-closed safeguards, SQLite audit logging, and offline test scenarios for reliable and traceable execution.'
-    ],
-    tags: ['Python', 'Markdown Reports', 'Market Screening']
+    detailHash: '#stock-research-assistant'
   }
-];
-
-const heroGalleryItems = [
-  { text: 'Academic Project', image: '/assets/project-meal-photo.webp', target: '#projects' },
-  { text: 'Personal Projects', image: '/assets/personal-douyin-account.jpg', target: '#personal-projects' },
-  { text: 'About Me', image: profilePhoto, target: '#experience' }
 ];
 
 const profileEpisodes = [
   {
-    number: '01',
-    title: 'Hiking',
+     title: 'Hiking',
     duration: '',
     image: '/assets/profile-hiking.jpg'
   },
   {
-    number: '02',
     title: 'Climbing',
     duration: '',
     image: '/assets/profile-climbing.jpg'
   },
   {
-    number: '03',
     title: 'Camping',
     duration: '',
     image: '/assets/profile-camping.jpg'
@@ -537,6 +586,25 @@ function CinematicProfileHero({ profileData, backgroundImage, personCutoutImage,
   );
 }
 
+function AboutMePage() {
+  return (
+    <div className="about-me-page">
+      <div className="about-me-shell">
+        <a className="case-study-back" href="#top">
+          <ArrowLeft size={18} />
+          Back to Home
+        </a>
+        <CinematicProfileHero
+          profileData={profile}
+          backgroundImage={profilePhoto}
+          personCutoutImage={personCutout}
+          episodes={profileEpisodes}
+        />
+      </div>
+    </div>
+  );
+}
+
 function ProjectCaseStudyPage({ caseStudy }) {
   const isStockResearchCaseStudy = caseStudy.hash === '#stock-research-assistant';
 
@@ -651,7 +719,7 @@ function App() {
   const [currentHash, setCurrentHash] = useState(() => window.location.hash);
   const navItems = useMemo(
     () => [
-      ['About me', '#experience'],
+      [aboutMeLabel, aboutMeHash],
       ['Academic Projects', '#projects'],
       ['Personal Projects', '#personal-projects'],
       ['Toolbox', '#toolbox']
@@ -686,7 +754,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (caseStudiesByHash[currentHash]) {
+    if (caseStudiesByHash[currentHash] || currentHash === aboutMeHash) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
@@ -706,14 +774,17 @@ function App() {
   };
 
   const activeCaseStudy = caseStudiesByHash[currentHash];
+  const isAboutMePage = currentHash === aboutMeHash;
   const isCaseStudy = Boolean(activeCaseStudy);
+  const isDetailPage = isCaseStudy || isAboutMePage;
 
   return (
     <>
+      <PixelStarfield />
       <main>
       <MagicBentoEffects />
-      {isCaseStudy ? null : <PortfolioMotion />}
-      {isCaseStudy ? null : (
+      {isDetailPage ? null : <PortfolioMotion />}
+      {isDetailPage ? null : (
         <div
           className={`sidebar-shell${isSidebarCollapsed ? ' is-collapsed' : ''}`}
           onMouseEnter={showSidebar}
@@ -727,19 +798,21 @@ function App() {
           />
           <header className="site-nav">
             <a className="brand" href="#top" aria-label="Go to top">
-              <span className="brand-mark">PQ</span>
-              <span>{profile.name}</span>
+              <span className="brand-mark">
+                <NavAsciiLabel text="PQ" className="nav-ascii-label-mark" />
+              </span>
+              <NavAsciiLabel text={profile.name} className="nav-ascii-label-brand" />
             </a>
             <nav aria-label="Main navigation">
               {navItems.map(([label, href]) => (
-                <a key={`${label}-${href}`} href={href}>
-                  {label}
+                <a key={`${label}-${href}`} href={href} aria-label={label}>
+                  <NavAsciiLabel text={label} />
                 </a>
               ))}
             </nav>
-            <a className="nav-contact" href={`mailto:${profile.email}`}>
+            <a className="nav-contact" href={`mailto:${profile.email}`} aria-label="Contact">
               <Mail size={18} />
-              Contact
+              <NavAsciiLabel text="Contact" className="nav-ascii-label-contact" />
             </a>
           </header>
         </div>
@@ -750,6 +823,8 @@ function App() {
         ) : (
           <ProjectCaseStudyPage caseStudy={activeCaseStudy} />
         )
+      ) : isAboutMePage ? (
+        <AboutMePage />
       ) : (
       <>
       <section className="hero" id="top">
@@ -762,49 +837,56 @@ function App() {
             <p className="hero-tagline">{profile.tagline}</p>
           </div>
 
-          <div className="hero-gallery" aria-label="Portfolio sections">
-            <CircularGallery
-              items={heroGalleryItems}
-              bend={1.6}
-              textColor="#f4fbff"
-              borderRadius={0.055}
-              font="700 28px Inter, sans-serif"
-              scrollSpeed={1.6}
-              scrollEase={0.045}
-            />
+          <div className="hero-ascii" aria-label={heroAsciiText}>
+            <HeroAsciiSafe>
+              <ASCIIText
+                text={heroAsciiText}
+                enableWaves={true}
+                asciiFontSize={8}
+                textFontSize={500}
+                textColor="#fdf9f3"
+                planeBaseHeight={15}
+              />
+            </HeroAsciiSafe>
           </div>
 
-        </div>
-      </section>
+          <section className="hero-section-switch" aria-label="Portfolio sections">
+            <GlitchCheckbox />
+          </section>
 
-      <section className="experience page-shell" id="experience">
-        <CinematicProfileHero
-          profileData={profile}
-          backgroundImage={profilePhoto}
-          personCutoutImage={personCutout}
-          episodes={profileEpisodes}
-        />
+          <section className="about-entry" id="about" aria-label="About me page">
+            <a className="about-signpost" href={aboutMeHash} aria-label={aboutMeLabel}>
+              <HeroAsciiSafe fallback={<span className="about-signpost-fallback">{aboutMeLabel}</span>}>
+                <div className="about-signpost-ascii" aria-hidden="true">
+                  <ASCIIText
+                    text={aboutMeLabel}
+                    enableWaves={true}
+                    asciiFontSize={5}
+                    textColor="#fdf9f3"
+                    planeBaseHeight={12}
+                    textureRenderer={drawAboutSignpostTexture}
+                    textureWidth={720}
+                    textureHeight={420}
+                  />
+                </div>
+              </HeroAsciiSafe>
+            </a>
+          </section>
+
+        </div>
       </section>
 
       <section className="projects page-shell" id="projects">
         <SectionHeader eyebrow="Academic Projects" />
         <div className="project-grid">
           {projects.map((project, index) => (
-            <article className={`project-card project-card-${index + 1} magic-bento-card`} key={project.title}>
+            <article className={`project-card project-card-${index + 1}`} key={project.title}>
               <a className="personal-project-card-link personal-project-detail-link" href={project.detailHash}>
                 <div className="project-image">
                   <img src={project.image} alt={`${project.title} project visual`} loading="lazy" decoding="async" />
-                  <span className="visual-link-label">View Case Study</span>
                 </div>
                 <div className="project-content">
-                  <span>{project.meta}</span>
                   <h3>{project.title}</h3>
-                  <p>{project.description}</p>
-                  <div className="tag-row">
-                    {project.tags.map((tag) => (
-                      <span key={tag}>{tag}</span>
-                    ))}
-                  </div>
                 </div>
               </a>
             </article>
@@ -813,7 +895,7 @@ function App() {
       </section>
 
       <section className="personal-projects page-shell" id="personal-projects">
-        <SectionHeader eyebrow="Personal Projects" />
+        <SectionHeader eyebrow="Selected Works" />
         <div className="project-grid personal-project-grid">
           {personalProjects.map((project) => {
             const visualClass = `project-image personal-project-visual personal-project-visual-${project.visual}${
@@ -823,7 +905,6 @@ function App() {
               <img src={project.image} alt={`${project.title} project screenshot`} loading="lazy" decoding="async" />
             ) : (
               <div className="personal-visual-panel">
-                <span>{project.meta}</span>
                 <strong>{project.title}</strong>
               </div>
             );
@@ -831,27 +912,15 @@ function App() {
               <>
                 <div className={visualClass}>
                   {visualContent}
-                  {project.detailHash ? <span className="visual-link-label">View Case Study</span> : null}
                 </div>
                 <div className="project-content">
-                  <span>{project.meta}</span>
                   <h3>{project.title}</h3>
-                  <ul className="project-bullets">
-                    {project.bullets.map((bullet) => (
-                      <li key={bullet}>{bullet}</li>
-                    ))}
-                  </ul>
-                  <div className="tag-row">
-                    {project.tags.map((tag) => (
-                      <span key={tag}>{tag}</span>
-                    ))}
-                  </div>
                 </div>
               </>
             );
 
             return (
-              <article className="project-card personal-project-card magic-bento-card" key={project.title}>
+              <article className="project-card personal-project-card" key={project.title}>
                 {project.detailHash ? (
                   <a className="personal-project-card-link personal-project-detail-link" href={project.detailHash}>
                     {cardContent}
@@ -868,10 +937,6 @@ function App() {
       <section className="toolbox page-shell" id="toolbox">
         <div className="toolbox-layout">
           <div className="toolbox-editorial">
-            <span className="toolbox-label">
-              <i aria-hidden="true" />
-              Tools & Skills
-            </span>
             <h2>
               <span>My</span>
               {' '}toolbox
