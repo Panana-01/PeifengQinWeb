@@ -124,15 +124,11 @@ const projects = [
   {
     title: 'Ethnography Study for a Shared Meal',
     detailHash: '#shared-meal-ethnography',
-<<<<<<< HEAD
     meta: 'Ethnomethodological HCI Study 2026',
     image: '/assets/project-meal-photo.webp',
     tags: ['Ethnography', 'Interaction Analysis', 'Design Implications'],
     description:
       'A field research project across shared-meal sessions, documenting talk, gesture, spatial layout, tools, and coordination patterns in domestic settings.'
-=======
-    image: '/assets/project-meal-photo.webp'
->>>>>>> a119eea7aabb11fafbc0b77430da2131f2593f65
   },
   {
     title: 'Chaotic Rehab Clinic',
@@ -746,18 +742,6 @@ function App() {
     () => window.matchMedia('(max-width: 760px)').matches || window.scrollY > 80
   );
   const [currentHash, setCurrentHash] = useState(() => window.location.hash);
-<<<<<<< HEAD
-  const navItems = useMemo(
-    () => [
-      ['About me', '#experience'],
-      ['Academic Projects', '#projects'],
-      ['Selected Works', '#personal-projects'],
-      ['Toolbox', '#toolbox']
-    ],
-    []
-  );
-=======
->>>>>>> a119eea7aabb11fafbc0b77430da2131f2593f65
 
   useEffect(() => {
     let frameId = 0;
