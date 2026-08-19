@@ -1,0 +1,36 @@
+---
+description: JSX uses the automatic runtime via vite.config.js; do not remove the React plugin
+globs: vite.config.js,**/*.jsx
+alwaysApply: false
+---
+
+# JSX runtime depends on `vite.config.js`
+
+`vite.config.js` registers `@vitejs/plugin-react`, which gives this repo the
+**automatic** JSX runtime and React Fast Refresh. A `.jsx` file therefore does
+not need to import React in order to return JSX.
+
+```jsx
+// ✅ Fine — automatic runtime injects the JSX factory
+function Widget() {
+  return <div className="widget" />;
+}
+```
+
+Existing files still carry `import React from 'react'`. That is harmless; leave
+it unless the import is otherwise unused and you are already editing that file.
+
+## Do not delete or empty this config
+
+Without the plugin, Vite falls back to esbuild's classic transform, which
+compiles JSX into `React.createElement(...)` and requires `React` in scope in
+every file. That failure mode is nasty:
+
+- `vite build` still exits 0, because esbuild does not resolve free identifiers.
+- In the browser, mount throws `Uncaught ReferenceError: React is not defined`,
+  so the **entire** app fails and `#root` is left empty — not just the new
+  component.
+- Fast Refresh silently degrades to full page reloads, losing state on save.
+
+If the dev server logs `page reload` instead of `hmr update` when you edit a
+component, the plugin is not being applied — check this file first.

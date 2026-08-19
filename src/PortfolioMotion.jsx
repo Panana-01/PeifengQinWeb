@@ -23,7 +23,7 @@ function PortfolioMotion() {
         '--hero-after-opacity': 0.78
       });
 
-      gsap.set('.hero-topline span, .hero-topline h1, .hero-tagline, .hero-gallery', {
+      gsap.set('.hero-topline span, .hero-topline h1', {
         willChange: 'transform, clip-path, opacity, filter'
       });
 
@@ -73,32 +73,30 @@ function PortfolioMotion() {
           0.62
         )
         .fromTo(
-          '.hero-tagline',
-          { y: 28, autoAlpha: 0, clipPath: 'inset(0 0 100% 0)', filter: 'blur(8px)' },
-          { y: 0, autoAlpha: 1, clipPath: 'inset(0 0 0% 0)', filter: 'blur(0px)', duration: 1.2 },
-          1.05
-        )
-        .fromTo(
-          '.hero-gallery',
-          { x: 120, y: 56, autoAlpha: 0, scale: 0.94, clipPath: 'inset(0 0 0 22%)', filter: 'blur(16px)' },
+          '.about-signpost',
+          { y: 28, autoAlpha: 0, scale: 0.94, filter: 'blur(10px)' },
           {
-            x: 0,
             y: 0,
             autoAlpha: 1,
             scale: 1,
-            clipPath: 'inset(0 0 0 0%)',
             filter: 'blur(0px)',
-            duration: 1.55,
-            clearProps: 'transform,clipPath,filter,willChange'
+            duration: 1.05,
+            clearProps: 'transform,filter'
           },
-          1.2
+          0.28
+        )
+        .fromTo(
+          '.hero-section-switch',
+          { y: 24, autoAlpha: 0, filter: 'blur(10px)' },
+          { y: 0, autoAlpha: 1, filter: 'blur(0px)', duration: 1.05, clearProps: 'transform,filter' },
+          0.32
         );
 
-      openingTimeline.set('.hero-topline span, .hero-topline h1, .hero-tagline', {
+      openingTimeline.set('.hero-topline span, .hero-topline h1', {
         clearProps: 'willChange,filter,clipPath'
       });
 
-      const sections = gsap.utils.toArray('.experience, .projects, .personal-projects, .toolbox');
+      const sections = gsap.utils.toArray('.projects, .personal-projects, .toolbox');
 
       sections.forEach((section) => {
         const eyebrow = section.querySelector('.section-header .eyebrow');
@@ -159,11 +157,6 @@ function PortfolioMotion() {
       });
 
       const cardGroups = [
-        {
-          trigger: '#experience',
-          targets:
-            '#experience .cinematic-media-card, #experience .cinematic-episode-card, #experience .cinematic-contact-strip span'
-        },
         { trigger: '#projects', targets: '#projects .project-card' },
         { trigger: '#personal-projects', targets: '#personal-projects .project-card' },
         { trigger: '#toolbox', targets: '#toolbox .toolbox-card' }
