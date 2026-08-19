@@ -38,7 +38,7 @@ const projects = [
   {
     title: 'Ethnography Study for a Shared Meal',
     detailHash: '#shared-meal-ethnography',
-    meta: 'Ethnomethodological HCI Study 路 2026',
+    meta: 'Ethnomethodological HCI Study 2026',
     image: '/assets/project-meal-photo.webp',
     tags: ['Ethnography', 'Interaction Analysis', 'Design Implications'],
     description:
@@ -216,8 +216,8 @@ const douyinCaseStudy = {
 
 const stockCaseStudy = {
   hash: '#stock-research-assistant',
-  title: 'Automated Stock Research Assistant',
-  eyebrow: 'Python Automation / AI Research Workflow / Personal Project',
+  title: 'Rule-based quantitative trading stimulation',
+  eyebrow: '',
   image: '/assets/personal-alpaca-paper-trading.png',
   visualMode: 'contain',
   processEyebrow: 'Cost-Aware Automation Workflow',
@@ -226,31 +226,20 @@ const stockCaseStudy = {
   focusTags: ['Python Automation', 'AI Analysis', 'Markdown Reports', 'Market Research'],
   summary:
     'A command-line research assistant designed to scan a personal NASDAQ and US stock watchlist, detect stocks falling relative to the previous regular-session close, use ChatGPT-assisted analysis to explain possible causes, and generate a daily report.',
-  stats: [
-    ['Python 3.11+', 'runtime'],
-    ['Europe/London', 'scheduler timezone'],
-    ['Markdown', 'daily report format'],
-    ['pytest', 'test coverage']
-  ],
+  stats: [],
   sections: [
     {
-      title: 'Why I Started',
+      title: 'Situation',
       body:
-        'I wanted a short-term research support tool that could automatically check the NASDAQ and US stocks I follow every day, quickly surface names that had fallen compared with the previous regular trading close, and generate a concise Chinese research report for review.'
+        'I was learning about stock trading and became increasingly interested in systematic, short-term strategies. While short-term trading is highly uncertain and can easily become speculative when decisions are driven by intuition, quantitative trading offers a way to make those decisions more structured, repeatable, and testable. Before committing any real capital, I wanted to understand whether I could build a trading workflow that could consistently collect market data, evaluate opportunities, apply predefined rules, and execute trades without relying on impulse or emotion. This led me to build a quantitative trading system in a paper-trading environment, where I could test the strategy and automation safely before considering any real-world deployment.'
     },
     {
-      title: 'Project Scope',
+      title: 'Tasks',
       body:
-        'The tool reads a watchlist.csv file, fetches latest price data, previous close, percentage change and volume, filters falling stocks, sends the list to ChatGPT for Chinese analysis, writes reports to reports/YYYY-MM-DD.md, and can optionally send the report by SMTP email.'
+        'My goal was to build an unattended workflow that could evaluate conditions and execute eligible simulated trades on US trading days. The system needed to preserve the flexibility of an AI agent without allowing probabilistic decisions to bypass deterministic validation and safety controls.'
     }
   ],
-  experiments: [
-    {
-      problem: 'The first version depended on direct OpenAI API calls, creating an ongoing token cost I did not want for a personal research tool.',
-      solution:
-        'I redesigned the delivery workflow around a scheduled Codex task. Each day, Codex runs the research workflow using my existing Codex/ChatGPT usage, generates a Markdown report, and saves it to a local folder. OneDrive then syncs that report automatically, so the latest output is available without a separate API billing loop.'
-    }
-  ]
+  experiments: []
 };
 
 const academicCaseStudies = [
@@ -553,7 +542,7 @@ function ProjectCaseStudyPage({ caseStudy }) {
           style={caseStudy.heroBackground ? { '--case-study-background': `url(${caseStudy.image})` } : undefined}
         >
           <div className={`case-study-copy${isStockResearchCaseStudy ? ' case-study-copy-stock' : ''}`}>
-            <span className="eyebrow">{caseStudy.eyebrow}</span>
+            {caseStudy.eyebrow ? <span className="eyebrow">{caseStudy.eyebrow}</span> : null}
             <h1>{caseStudy.title}</h1>
             <p>{caseStudy.summary}</p>
             <div className="case-study-tags" aria-label="Project focus areas">
@@ -569,76 +558,99 @@ function ProjectCaseStudyPage({ caseStudy }) {
           )}
         </section>
 
-        <section className="case-study-stats" aria-label="Project results">
-          {caseStudy.stats.map(([value, label]) => (
-            <div className="magic-bento-card" key={label}>
-              <strong>{value}</strong>
-              <span>{label}</span>
+        {caseStudy.stats.length > 0 ? (
+          <section className="case-study-stats" aria-label="Project results">
+            {caseStudy.stats.map(([value, label]) => (
+              <div className="magic-bento-card" key={label}>
+                <strong>{value}</strong>
+                <span>{label}</span>
+              </div>
+            ))}
+          </section>
+        ) : null}
+
+        {isStockResearchCaseStudy ? (
+          <section className="case-study-stock-overview magic-bento-card magic-bento-static">
+            <div className="case-study-stock-overview-copy">
+              {caseStudy.sections.map((section) => (
+                <article className="case-study-stock-overview-item" key={section.title}>
+                  <span>{section.title}</span>
+                  <p>{section.body}</p>
+                </article>
+              ))}
             </div>
-          ))}
-        </section>
-
-        <section className="case-study-grid">
-          {caseStudy.sections.map((section) => (
-            <article className="case-study-panel magic-bento-card" key={section.title}>
-              <span>{section.title}</span>
-              <p>{section.body}</p>
-            </article>
-          ))}
-        </section>
-
-        <section
-          className={`case-study-process magic-bento-card magic-bento-static${
-            caseStudy.experiments.some((item) => item.analysis) ? ' case-study-process-structured' : ''
-          }`}
-        >
-          <div>
-            <span className="eyebrow">{caseStudy.processEyebrow}</span>
-            <h2>{caseStudy.processTitle}</h2>
-          </div>
-          <div className="case-study-problems">
-            {caseStudy.experiments.map((item, index) => (
-              <article
-                className={`${item.analysis ? 'case-study-experiment-structured' : ''}${
-                  caseStudy.showExperimentNumbers === false && !item.metrics ? ' case-study-experiment-no-heading' : ''
-                }`}
-                key={item.problem}
-              >
-                {caseStudy.showExperimentNumbers !== false || item.metrics ? (
-                  <div className="case-study-experiment-heading">
-                    {caseStudy.showExperimentNumbers !== false ? <strong>{String(index + 1).padStart(2, '0')}</strong> : null}
-                    {item.metrics ? (
-                      <div className="case-study-experiment-metrics" aria-label="Experiment evidence">
-                        {item.metrics.map((metric) => (
-                          <span key={metric}>{metric}</span>
-                        ))}
-                      </div>
-                    ) : null}
-                  </div>
-                ) : null}
-                <h3>{item.problem}</h3>
-                {item.analysis ? (
-                  <div className="case-study-experiment-flow">
-                    <div>
-                      <span>Analysis</span>
-                      <p>{item.analysis}</p>
-                    </div>
-                    <div>
-                      <span>Action</span>
-                      <p>{item.action}</p>
-                    </div>
-                    <div>
-                      <span>Result</span>
-                      <p>{item.result}</p>
-                    </div>
-                  </div>
-                ) : (
-                  <p>{item.solution}</p>
-                )}
+            <aside className="case-study-build-log" aria-labelledby="stock-build-log-title">
+              <h2 id="stock-build-log-title">Build Log</h2>
+              <div className="case-study-build-log-placeholder">
+                <span>Updates coming soon</span>
+              </div>
+            </aside>
+          </section>
+        ) : (
+          <section className="case-study-grid">
+            {caseStudy.sections.map((section) => (
+              <article className="case-study-panel magic-bento-card" key={section.title}>
+                <span>{section.title}</span>
+                <p>{section.body}</p>
               </article>
             ))}
-          </div>
-        </section>
+          </section>
+        )}
+
+        {caseStudy.experiments.length > 0 ? (
+          <section
+            className={`case-study-process magic-bento-card magic-bento-static${
+              caseStudy.experiments.some((item) => item.analysis) ? ' case-study-process-structured' : ''
+            }`}
+          >
+            <div>
+              <span className="eyebrow">{caseStudy.processEyebrow}</span>
+              <h2>{caseStudy.processTitle}</h2>
+            </div>
+            <div className="case-study-problems">
+              {caseStudy.experiments.map((item, index) => (
+                <article
+                  className={`${item.analysis ? 'case-study-experiment-structured' : ''}${
+                    caseStudy.showExperimentNumbers === false && !item.metrics ? ' case-study-experiment-no-heading' : ''
+                  }`}
+                  key={item.problem}
+                >
+                  {caseStudy.showExperimentNumbers !== false || item.metrics ? (
+                    <div className="case-study-experiment-heading">
+                      {caseStudy.showExperimentNumbers !== false ? <strong>{String(index + 1).padStart(2, '0')}</strong> : null}
+                      {item.metrics ? (
+                        <div className="case-study-experiment-metrics" aria-label="Experiment evidence">
+                          {item.metrics.map((metric) => (
+                            <span key={metric}>{metric}</span>
+                          ))}
+                        </div>
+                      ) : null}
+                    </div>
+                  ) : null}
+                  <h3>{item.problem}</h3>
+                  {item.analysis ? (
+                    <div className="case-study-experiment-flow">
+                      <div>
+                        <span>Analysis</span>
+                        <p>{item.analysis}</p>
+                      </div>
+                      <div>
+                        <span>Action</span>
+                        <p>{item.action}</p>
+                      </div>
+                      <div>
+                        <span>Result</span>
+                        <p>{item.result}</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <p>{item.solution}</p>
+                  )}
+                </article>
+              ))}
+            </div>
+          </section>
+        ) : null}
       </div>
     </div>
   );
@@ -653,7 +665,7 @@ function App() {
     () => [
       ['About me', '#experience'],
       ['Academic Projects', '#projects'],
-      ['Personal Projects', '#personal-projects'],
+      ['Selected Works', '#personal-projects'],
       ['Toolbox', '#toolbox']
     ],
     []
@@ -813,7 +825,7 @@ function App() {
       </section>
 
       <section className="personal-projects page-shell" id="personal-projects">
-        <SectionHeader eyebrow="Personal Projects" />
+        <SectionHeader eyebrow="Selected Works" />
         <div className="project-grid personal-project-grid">
           {personalProjects.map((project) => {
             const visualClass = `project-image personal-project-visual personal-project-visual-${project.visual}${
