@@ -48,11 +48,20 @@ function mapRange(n, start, stop, start2, stop2) {
   return ((n - start) / (stop - start)) * (stop2 - start2) + start2;
 }
 
+function waveStrength(enableWaves) {
+  if (typeof enableWaves === 'number') {
+    return Math.max(0, Math.min(1, enableWaves));
+  }
+  return enableWaves ? 1 : 0;
+}
+
 const PX_RATIO = typeof window !== 'undefined' ? window.devicePixelRatio : 1;
 
 class AsciiFilter {
-  constructor(renderer, { fontSize, fontFamily, charset, invert } = {}) {
+  constructor(renderer, { fontSize, fontFamily, charset, invert, enableHueRotate = true, pixelGrid = false } = {}) {
     this.renderer = renderer;
+    this.enableHueRotate = enableHueRotate;
+    this.pixelGrid = pixelGrid;
     this.domElement = document.createElement('div');
     this.domElement.style.position = 'absolute';
     this.domElement.style.top = '0';
@@ -98,7 +107,10 @@ class AsciiFilter {
     this.context.font = `${this.fontSize}px ${this.fontFamily}`;
     const charWidth = this.context.measureText('A').width;
 
-    this.cols = Math.max(1, Math.floor(this.width / (this.fontSize * (charWidth / this.fontSize))));
+    this.cols = Math.max(
+      1,
+      Math.floor(this.width / (this.pixelGrid ? this.fontSize : this.fontSize * (charWidth / this.fontSize)))
+    );
     this.rows = Math.max(1, Math.floor(this.height / this.fontSize));
 
     this.canvas.width = this.cols;
@@ -135,7 +147,11 @@ class AsciiFilter {
     }
 
     this.asciify(this.context, w, h);
-    this.hue();
+    if (this.enableHueRotate) {
+      this.hue();
+    } else {
+      this.domElement.style.filter = 'none';
+    }
   }
 
   onMouseMove(e) {
@@ -288,6 +304,9 @@ class CanvAscii {
       textColor,
       planeBaseHeight,
       enableWaves,
+      enableRotation = true,
+      enableHueRotate = true,
+      pixelGrid = false,
       textureRenderer,
       textureWidth,
       textureHeight
@@ -305,6 +324,9 @@ class CanvAscii {
     this.width = width;
     this.height = height;
     this.enableWaves = enableWaves;
+    this.enableRotation = enableRotation;
+    this.enableHueRotate = enableHueRotate;
+    this.pixelGrid = pixelGrid;
     this.textureRenderer = textureRenderer;
     this.textureWidth = textureWidth;
     this.textureHeight = textureHeight;
@@ -361,7 +383,7 @@ class CanvAscii {
         uTime: { value: 0 },
         mouse: { value: 1.0 },
         uTexture: { value: this.texture },
-        uEnableWaves: { value: this.enableWaves ? 1.0 : 0.0 }
+        uEnableWaves: { value: waveStrength(this.enableWaves) }
       }
     });
 
@@ -381,7 +403,9 @@ class CanvAscii {
     this.filter = new AsciiFilter(this.renderer, {
       fontFamily: 'IBM Plex Mono',
       fontSize: this.asciiFontSize,
-      invert: true
+      invert: true,
+      enableHueRotate: this.enableHueRotate,
+      pixelGrid: this.pixelGrid
     });
 
     this.container.appendChild(this.filter.domElement);
@@ -438,13 +462,19 @@ class CanvAscii {
     this.textCanvas.render();
     this.texture.needsUpdate = true;
 
-    this.mesh.material.uniforms.uTime.value = Math.sin(time);
+    this.mesh.material.uniforms.uTime.value = this.enableHueRotate ? Math.sin(time) : 0;
 
     this.updateRotation();
     this.filter.render(this.scene, this.camera);
   }
 
   updateRotation() {
+    if (!this.enableRotation) {
+      this.mesh.rotation.x = 0;
+      this.mesh.rotation.y = 0;
+      return;
+    }
+
     const x = mapRange(this.mouse.y, 0, this.height, 0.5, -0.5);
     const y = mapRange(this.mouse.x, 0, this.width, -0.5, 0.5);
 
@@ -493,6 +523,9 @@ export default function ASCIIText({
   textColor = '#fdf9f3',
   planeBaseHeight = 8,
   enableWaves = true,
+  enableRotation = true,
+  enableHueRotate = true,
+  pixelGrid = false,
   textureRenderer = null,
   textureWidth = 720,
   textureHeight = 420
@@ -516,6 +549,9 @@ export default function ASCIIText({
           textColor,
           planeBaseHeight,
           enableWaves,
+          enableRotation,
+          enableHueRotate,
+          pixelGrid,
           textureRenderer,
           textureWidth,
           textureHeight
@@ -589,6 +625,9 @@ export default function ASCIIText({
     textColor,
     planeBaseHeight,
     enableWaves,
+    enableRotation,
+    enableHueRotate,
+    pixelGrid,
     textureRenderer,
     textureWidth,
     textureHeight

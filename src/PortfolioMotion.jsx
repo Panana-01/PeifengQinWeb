@@ -23,7 +23,7 @@ function PortfolioMotion() {
         '--hero-after-opacity': 0.78
       });
 
-      gsap.set('.hero-topline span, .hero-topline h1, .hero-tagline', {
+      gsap.set('.hero-topline span, .hero-topline h1', {
         willChange: 'transform, clip-path, opacity, filter'
       });
 
@@ -73,12 +73,6 @@ function PortfolioMotion() {
           0.62
         )
         .fromTo(
-          '.hero-tagline',
-          { y: 28, autoAlpha: 0, clipPath: 'inset(0 0 100% 0)', filter: 'blur(8px)' },
-          { y: 0, autoAlpha: 1, clipPath: 'inset(0 0 0% 0)', filter: 'blur(0px)', duration: 1.2 },
-          1.05
-        )
-        .fromTo(
           '.about-signpost',
           { y: 28, autoAlpha: 0, scale: 0.94, filter: 'blur(10px)' },
           {
@@ -98,7 +92,7 @@ function PortfolioMotion() {
           0.32
         );
 
-      openingTimeline.set('.hero-topline span, .hero-topline h1, .hero-tagline', {
+      openingTimeline.set('.hero-topline span, .hero-topline h1', {
         clearProps: 'willChange,filter,clipPath'
       });
 

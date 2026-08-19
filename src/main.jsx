@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
   ArrowLeft,
@@ -12,6 +12,8 @@ import VenemCaseStudyPage from './VenemCaseStudyPage';
 import PixelStarfield from './PixelStarfield';
 import ASCIIText from './ASCIIText';
 import GlitchCheckbox from './GlitchCheckbox';
+import AboutGlowCard from './AboutGlowCard';
+import WebsiteWorkflowPage from './WebsiteWorkflowPage';
 import './styles.css';
 
 const heroAsciiText = 'Hey! Thank you for coming here';
@@ -111,6 +113,7 @@ const profilePhoto = '/assets/profile-rain-photo.jpg';
 const personCutout = profilePhoto;
 const aboutMeHash = '#about-me';
 const aboutMeLabel = 'About me';
+const howIBuiltThisHash = '#how-i-built-this';
 
 const projects = [
   {
@@ -171,26 +174,28 @@ const profileEpisodes = [
 const toolboxItems = [
   {
     name: 'Unity',
-    description: 'Interactive game systems, spatial prototypes and mixed reality',
     logo: '/assets/tool-unity.png',
     logoClass: 'toolbox-logo-invert',
     accent: '#ffd27a'
   },
   {
+    name: 'Cursor',
+    logo: '/assets/tool-cursor.svg',
+    logoClass: 'toolbox-logo-invert',
+    accent: '#d7e4ee'
+  },
+  {
     name: 'Premiere Pro',
-    description: 'Video editing, content structure and social media production',
     logo: '/assets/tool-premiere-pro.png',
     accent: '#b9b6ff'
   },
   {
     name: 'After Effects',
-    description: 'Motion graphics, compositing and visual storytelling',
     logo: '/assets/tool-after-effects.png',
     accent: '#f2a8c4'
   },
   {
     name: 'AI-assisted Workflow',
-    description: 'ChatGPT, Codex and whisper.cpp for faster prototyping and production',
     logo: '/assets/tool-openai.png',
     logoClass: 'toolbox-logo-invert',
     accent: '#ff9f87'
@@ -509,7 +514,7 @@ function VideoBackdrop() {
 function SectionHeader({ eyebrow, title, text }) {
   return (
     <div className="section-header">
-      <span className="eyebrow">{eyebrow}</span>
+      {eyebrow ? <span className="eyebrow">{eyebrow}</span> : null}
       {title ? <h2>{title}</h2> : null}
       {text ? <p>{text}</p> : null}
     </div>
@@ -584,6 +589,10 @@ function CinematicProfileHero({ profileData, backgroundImage, personCutoutImage,
       </div>
     </div>
   );
+}
+
+function HowIBuiltThisPage() {
+  return <WebsiteWorkflowPage />;
 }
 
 function AboutMePage() {
@@ -717,15 +726,6 @@ function App() {
     () => window.matchMedia('(max-width: 760px)').matches || window.scrollY > 80
   );
   const [currentHash, setCurrentHash] = useState(() => window.location.hash);
-  const navItems = useMemo(
-    () => [
-      [aboutMeLabel, aboutMeHash],
-      ['Academic Projects', '#projects'],
-      ['Personal Projects', '#personal-projects'],
-      ['Toolbox', '#toolbox']
-    ],
-    []
-  );
 
   useEffect(() => {
     let frameId = 0;
@@ -754,7 +754,11 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (caseStudiesByHash[currentHash] || currentHash === aboutMeHash) {
+    if (
+      caseStudiesByHash[currentHash] ||
+      currentHash === aboutMeHash ||
+      currentHash === howIBuiltThisHash
+    ) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
@@ -775,8 +779,9 @@ function App() {
 
   const activeCaseStudy = caseStudiesByHash[currentHash];
   const isAboutMePage = currentHash === aboutMeHash;
+  const isHowIBuiltThisPage = currentHash === howIBuiltThisHash;
   const isCaseStudy = Boolean(activeCaseStudy);
-  const isDetailPage = isCaseStudy || isAboutMePage;
+  const isDetailPage = isCaseStudy || isAboutMePage || isHowIBuiltThisPage;
 
   return (
     <>
@@ -797,19 +802,6 @@ function App() {
             onClick={showSidebar}
           />
           <header className="site-nav">
-            <a className="brand" href="#top" aria-label="Go to top">
-              <span className="brand-mark">
-                <NavAsciiLabel text="PQ" className="nav-ascii-label-mark" />
-              </span>
-              <NavAsciiLabel text={profile.name} className="nav-ascii-label-brand" />
-            </a>
-            <nav aria-label="Main navigation">
-              {navItems.map(([label, href]) => (
-                <a key={`${label}-${href}`} href={href} aria-label={label}>
-                  <NavAsciiLabel text={label} />
-                </a>
-              ))}
-            </nav>
             <a className="nav-contact" href={`mailto:${profile.email}`} aria-label="Contact">
               <Mail size={18} />
               <NavAsciiLabel text="Contact" className="nav-ascii-label-contact" />
@@ -823,6 +815,8 @@ function App() {
         ) : (
           <ProjectCaseStudyPage caseStudy={activeCaseStudy} />
         )
+      ) : isHowIBuiltThisPage ? (
+        <HowIBuiltThisPage />
       ) : isAboutMePage ? (
         <AboutMePage />
       ) : (
@@ -834,7 +828,6 @@ function App() {
           <div className="hero-topline">
             <span>MSc HCI / University of Nottingham</span>
             <h1>{profile.name}</h1>
-            <p className="hero-tagline">{profile.tagline}</p>
           </div>
 
           <div className="hero-ascii" aria-label={heroAsciiText}>
@@ -851,46 +844,42 @@ function App() {
           </div>
 
           <section className="hero-section-switch" aria-label="Portfolio sections">
-            <GlitchCheckbox />
+            <GlitchCheckbox
+              options={[
+                { id: 'selected-works', label: 'Selected works', href: '#personal-projects' },
+                { id: 'academic-works', label: 'Academic works', href: '#projects' },
+                { id: 'toolbox', label: 'Toolbox', href: '#toolbox' }
+              ]}
+            />
           </section>
 
           <section className="about-entry" id="about" aria-label="About me page">
+            <AboutGlowCard
+              href={howIBuiltThisHash}
+              title="How I built this website"
+              process="IDEA → DESIGN → AI→ CODE → ITERATE"
+              cta="Explore my workflow →"
+            />
             <a className="about-signpost" href={aboutMeHash} aria-label={aboutMeLabel}>
               <HeroAsciiSafe fallback={<span className="about-signpost-fallback">{aboutMeLabel}</span>}>
-                <div className="about-signpost-ascii" aria-hidden="true">
-                  <ASCIIText
-                    text={aboutMeLabel}
-                    enableWaves={true}
-                    asciiFontSize={5}
-                    textColor="#fdf9f3"
-                    planeBaseHeight={12}
-                    textureRenderer={drawAboutSignpostTexture}
-                    textureWidth={720}
-                    textureHeight={420}
-                  />
+                <div className="about-signpost-board">
+                  <div className="about-signpost-ascii" aria-hidden="true">
+                    <ASCIIText
+                      text={aboutMeLabel}
+                      enableWaves={0.28}
+                      asciiFontSize={1}
+                      textColor="#fdf9f3"
+                      planeBaseHeight={16}
+                      textureRenderer={drawAboutSignpostTexture}
+                      textureWidth={720}
+                      textureHeight={420}
+                    />
+                  </div>
                 </div>
               </HeroAsciiSafe>
             </a>
           </section>
 
-        </div>
-      </section>
-
-      <section className="projects page-shell" id="projects">
-        <SectionHeader eyebrow="Academic Projects" />
-        <div className="project-grid">
-          {projects.map((project, index) => (
-            <article className={`project-card project-card-${index + 1}`} key={project.title}>
-              <a className="personal-project-card-link personal-project-detail-link" href={project.detailHash}>
-                <div className="project-image">
-                  <img src={project.image} alt={`${project.title} project visual`} loading="lazy" decoding="async" />
-                </div>
-                <div className="project-content">
-                  <h3>{project.title}</h3>
-                </div>
-              </a>
-            </article>
-          ))}
         </div>
       </section>
 
@@ -934,6 +923,24 @@ function App() {
         </div>
       </section>
 
+      <section className="projects page-shell" id="projects">
+        <SectionHeader eyebrow="Academic Projects" />
+        <div className="project-grid">
+          {projects.map((project, index) => (
+            <article className={`project-card project-card-${index + 1}`} key={project.title}>
+              <a className="personal-project-card-link personal-project-detail-link" href={project.detailHash}>
+                <div className="project-image">
+                  <img src={project.image} alt={`${project.title} project visual`} loading="lazy" decoding="async" />
+                </div>
+                <div className="project-content">
+                  <h3>{project.title}</h3>
+                </div>
+              </a>
+            </article>
+          ))}
+        </div>
+      </section>
+
       <section className="toolbox page-shell" id="toolbox">
         <div className="toolbox-layout">
           <div className="toolbox-editorial">
@@ -944,7 +951,7 @@ function App() {
           </div>
 
           <div className="toolbox-list">
-            {toolboxItems.map(({ name, description, logo, logoClass, accent }) => (
+            {toolboxItems.map(({ name, logo, logoClass, accent }) => (
               <article
                 className="toolbox-card magic-bento-card"
                 key={name}
@@ -955,7 +962,6 @@ function App() {
                 </div>
                 <div className="toolbox-card-copy">
                   <h3>{name}</h3>
-                  <p>{description}</p>
                 </div>
               </article>
             ))}
