@@ -254,7 +254,7 @@ const stockCaseStudy = {
     {
       title: 'Situation',
       body:
-        'I was learning about stock trading and became increasingly interested in systematic, short-term strategies. While short-term trading is highly uncertain and can easily become speculative when decisions are driven by intuition, quantitative trading offers a way to make those decisions more structured, repeatable, and testable. Before committing any real capital, I wanted to understand whether I could build a trading workflow that could consistently collect market data, evaluate opportunities, apply predefined rules, and execute trades without relying on impulse or emotion. This led me to build a quantitative trading system that calls Alpaca's paper-trading API to simulate the strategy in real time on a paper account, so I could test the automation safely before considering any real-world deployment.'
+        "I was learning about stock trading and became increasingly interested in systematic, short-term strategies. While short-term trading is highly uncertain and can easily become speculative when decisions are driven by intuition, quantitative trading offers a way to make those decisions more structured, repeatable, and testable. Before committing any real capital, I wanted to understand whether I could build a trading workflow that could consistently collect market data, evaluate opportunities, apply predefined rules, and execute trades without relying on impulse or emotion. This led me to build a quantitative trading system that calls Alpaca's paper-trading API to simulate the strategy in real time on a paper account, so I could test the automation safely before considering any real-world deployment."
     },
     {
       title: 'Tasks',
