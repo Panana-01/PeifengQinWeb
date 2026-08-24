@@ -9,15 +9,11 @@
   min-height: 100vh;
   overflow-x: clip;
   color: #eef8ff;
-  background:
-    radial-gradient(circle at 8% 4%, rgba(91, 124, 153, 0.16), transparent 28rem),
-    radial-gradient(circle at 92% 24%, rgba(80, 194, 221, 0.08), transparent 30rem),
-    rgba(2, 4, 7, 0.86);
+  background: transparent;
 }
 
 .workflow-header,
-.workflow-map,
-.workflow-outcome {
+.workflow-map {
   width: min(1200px, calc(100% - 64px));
   margin: 0 auto;
 }
@@ -28,14 +24,14 @@
 
 .workflow-back {
   display: inline-flex;
-  gap: 9px;
   align-items: center;
-  min-height: 42px;
-  padding: 0 14px;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
   border: 1px solid rgba(226, 242, 252, 0.18);
   border-radius: 999px;
   color: rgba(236, 247, 253, 0.76);
-  font-size: 13px;
   background: rgba(8, 14, 20, 0.72);
   transition: color 180ms ease, border-color 180ms ease, transform 180ms ease;
 }
@@ -48,8 +44,7 @@
 }
 
 .workflow-node-label,
-.workflow-solution-kicker,
-.workflow-outcome span {
+.workflow-solution-kicker {
   display: block;
   color: var(--workflow-cyan);
   font-size: 11px;
@@ -108,6 +103,7 @@
 
 .workflow-node {
   position: relative;
+  grid-column: 1;
   grid-row: 1;
   min-width: 0;
   padding: clamp(24px, 3.2vw, 38px);
@@ -120,14 +116,6 @@
   box-shadow: 0 26px 80px rgba(0, 0, 0, 0.22);
 }
 
-.workflow-step.is-left .workflow-node {
-  grid-column: 1;
-}
-
-.workflow-step.is-right .workflow-node {
-  grid-column: 3;
-}
-
 .workflow-step.is-problem .workflow-node {
   border-color: rgba(255, 109, 95, 0.24);
 }
@@ -136,35 +124,19 @@
   position: absolute;
   top: 0;
   bottom: 0;
+  left: 0;
   width: 3px;
   border-radius: 14px 0 0 14px;
   content: '';
   background: linear-gradient(180deg, var(--workflow-coral), transparent 78%);
 }
 
-.workflow-step.is-left .workflow-node::before {
-  left: 0;
-}
-
-.workflow-step.is-right .workflow-node::before {
-  right: 0;
-  transform: scaleX(-1);
-}
-
 .workflow-node-label {
-  margin-bottom: 15px;
+  margin-bottom: 0;
 }
 
 .workflow-step.is-problem .workflow-node-label {
   color: #ff8f83;
-}
-
-.workflow-node h2 {
-  margin: 0;
-  font-size: clamp(25px, 2.35vw, 34px);
-  font-weight: 590;
-  line-height: 1.08;
-  letter-spacing: -0.025em;
 }
 
 .workflow-node > p {
@@ -178,174 +150,47 @@
   color: rgba(255, 224, 219, 0.78);
 }
 
-.workflow-node .workflow-milestone-note {
-  padding-top: 17px;
-  border-top: 1px solid rgba(226, 242, 252, 0.1);
-  color: rgba(118, 219, 251, 0.78);
-  font-size: 13px;
-}
-
-.workflow-solution-control {
+.workflow-solution {
   position: relative;
-  display: flex;
-  margin-top: 24px;
-}
-
-.workflow-solution-control.is-left {
-  justify-content: flex-end;
-}
-
-.workflow-solution-control.is-right {
-  justify-content: flex-start;
-}
-
-.workflow-solution-button {
-  display: inline-flex;
-  gap: 9px;
-  align-items: center;
-  justify-content: center;
-  min-height: 42px;
-  padding: 0 15px;
-  border: 1px solid rgba(102, 217, 255, 0.48);
-  border-radius: 999px;
-  color: #bfeeff;
-  font: inherit;
-  font-size: 12px;
-  font-weight: 760;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  background: rgba(102, 217, 255, 0.08);
-  cursor: pointer;
-  transition: color 180ms ease, background 180ms ease, transform 180ms ease, box-shadow 180ms ease;
-}
-
-.workflow-solution-button:hover,
-.workflow-solution-button:focus-visible,
-.workflow-solution-control.is-open .workflow-solution-button {
-  color: #061017;
-  background: var(--workflow-cyan);
-  box-shadow: 0 0 28px rgba(102, 217, 255, 0.22);
-  transform: translateY(-2px);
-}
-
-.workflow-solution-popover {
-  position: absolute;
-  top: -10px;
-  z-index: 20;
-  width: min(430px, 40vw);
-  padding: 24px;
-  visibility: hidden;
+  grid-column: 3;
+  grid-row: 1;
+  min-width: 0;
+  padding: clamp(24px, 3.2vw, 38px);
   border: 1px solid rgba(102, 217, 255, 0.34);
-  border-radius: 13px;
-  background: rgba(8, 19, 27, 0.98);
-  box-shadow: 0 34px 100px rgba(0, 0, 0, 0.5), 0 0 40px rgba(102, 217, 255, 0.08);
-  opacity: 0;
-  transform: translateY(10px) scale(0.98);
-  transition: opacity 180ms ease, transform 220ms cubic-bezier(0.22, 1, 0.36, 1), visibility 180ms;
-  pointer-events: none;
+  border-radius: 14px;
+  background:
+    linear-gradient(145deg, rgba(102, 217, 255, 0.1), transparent 46%),
+    rgba(7, 13, 19, 0.92);
+  box-shadow: 0 26px 80px rgba(0, 0, 0, 0.22);
 }
 
-.workflow-solution-popover::before {
+.workflow-solution::before {
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 78px;
+  left: 0;
+  width: 3px;
+  border-radius: 14px 0 0 14px;
   content: '';
+  background: linear-gradient(180deg, var(--workflow-cyan), transparent 78%);
 }
 
-.workflow-solution-control.is-left .workflow-solution-popover {
-  left: calc(100% + 76px);
-}
-
-.workflow-solution-control.is-left .workflow-solution-popover::before {
-  right: 100%;
-}
-
-.workflow-solution-control.is-right .workflow-solution-popover {
-  right: calc(100% + 76px);
-}
-
-.workflow-solution-control.is-right .workflow-solution-popover::before {
-  left: 100%;
-}
-
-.workflow-solution-control.is-open .workflow-solution-popover {
-  visibility: visible;
-  opacity: 1;
-  transform: translateY(0) scale(1);
-  pointer-events: auto;
-}
-
-.workflow-solution-popover h3 {
+.workflow-solution h3 {
   margin: 9px 0 13px;
-  font-size: 22px;
+  font-size: clamp(20px, 1.8vw, 24px);
   line-height: 1.12;
 }
 
-.workflow-solution-popover > p {
+.workflow-solution > p {
   margin: 0;
   color: rgba(229, 244, 251, 0.72);
   font-size: 14px;
   line-height: 1.65;
 }
 
-.workflow-solution-popover ul {
-  display: grid;
-  gap: 8px;
-  margin: 18px 0 0;
-  padding: 16px 0 0;
-  border-top: 1px solid rgba(102, 217, 255, 0.14);
-  list-style: none;
-}
-
-.workflow-solution-popover li {
-  display: grid;
-  grid-template-columns: 18px 1fr;
-  gap: 8px;
-  align-items: start;
-  color: rgba(225, 244, 252, 0.8);
-  font-size: 12px;
-  line-height: 1.45;
-}
-
-.workflow-solution-popover li svg {
-  margin-top: 1px;
-  color: var(--workflow-cyan);
-}
-
-.workflow-outcome {
-  display: grid;
-  grid-template-columns: 48px 1fr;
-  gap: 22px;
-  margin-bottom: 70px;
-  padding: clamp(28px, 4vw, 48px);
-  border: 1px solid rgba(102, 217, 255, 0.22);
-  border-radius: 16px;
-  background: linear-gradient(135deg, rgba(102, 217, 255, 0.11), rgba(8, 15, 21, 0.92) 54%);
-}
-
-.workflow-outcome > svg {
-  color: var(--workflow-cyan);
-}
-
-.workflow-outcome h2 {
-  max-width: 930px;
-  margin: 10px 0 12px;
-  font-size: clamp(24px, 3vw, 40px);
-  font-weight: 560;
-  line-height: 1.15;
-  letter-spacing: -0.025em;
-}
-
-.workflow-outcome p {
-  color: rgba(230, 243, 250, 0.62);
-  font-size: 14px;
-}
-
 @media (max-width: 900px) {
   .workflow-header,
-  .workflow-map,
-  .workflow-outcome {
+  .workflow-map {
     width: min(100% - 36px, 720px);
   }
 
@@ -367,46 +212,14 @@
     margin-top: 16px;
   }
 
-  .workflow-step.is-left .workflow-node,
-  .workflow-step.is-right .workflow-node {
+  .workflow-node {
     grid-column: 2;
+    grid-row: 1;
   }
 
-  .workflow-step.is-right .workflow-node::before {
-    right: auto;
-    left: 0;
-    transform: none;
-  }
-
-  .workflow-solution-control,
-  .workflow-solution-control.is-left,
-  .workflow-solution-control.is-right {
-    flex-wrap: wrap;
-    justify-content: flex-start;
-  }
-
-  .workflow-solution-popover,
-  .workflow-solution-control.is-left .workflow-solution-popover,
-  .workflow-solution-control.is-right .workflow-solution-popover {
-    position: relative;
-    top: auto;
-    right: auto;
-    left: auto;
-    display: none;
-    flex-basis: 100%;
-    width: 100%;
-    margin-top: 12px;
-    visibility: visible;
-    opacity: 1;
-    transform: none;
-  }
-
-  .workflow-solution-popover::before {
-    display: none;
-  }
-
-  .workflow-solution-control.is-open .workflow-solution-popover {
-    display: block;
+  .workflow-solution {
+    grid-column: 2;
+    grid-row: 2;
   }
 }
 
@@ -430,16 +243,9 @@
     box-shadow: 0 0 0 4px rgba(4, 9, 14, 0.92);
   }
 
-  .workflow-node {
+  .workflow-node,
+  .workflow-solution {
     padding: 22px;
-  }
-
-  .workflow-node h2 {
-    font-size: 25px;
-  }
-
-  .workflow-outcome {
-    grid-template-columns: 1fr;
   }
 }
 

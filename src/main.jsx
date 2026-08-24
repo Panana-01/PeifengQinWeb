@@ -18,42 +18,6 @@ import './styles.css';
 
 const heroAsciiText = 'Hey! Thank you for coming here';
 
-const drawAboutSignpostTexture = (context, canvas, { text, color, fontFamily }) => {
-  const { width, height } = canvas;
-  const boardTop = height * 0.08;
-  const boardBottom = height * 0.64;
-  const boardMiddle = (boardTop + boardBottom) / 2;
-  const postX = width * 0.47;
-
-  context.save();
-  context.strokeStyle = color;
-  context.fillStyle = color;
-  context.lineWidth = Math.max(5, height * 0.018);
-  context.lineJoin = 'miter';
-  context.lineCap = 'square';
-
-  context.beginPath();
-  context.moveTo(postX, boardBottom);
-  context.lineTo(postX, height * 0.96);
-  context.stroke();
-
-  context.beginPath();
-  context.moveTo(width * 0.06, boardTop);
-  context.lineTo(width * 0.78, boardTop);
-  context.lineTo(width * 0.96, boardMiddle);
-  context.lineTo(width * 0.78, boardBottom);
-  context.lineTo(width * 0.06, boardBottom);
-  context.lineTo(width * 0.12, boardMiddle);
-  context.closePath();
-  context.stroke();
-
-  context.font = `700 ${Math.round(height * 0.17)}px ${fontFamily}`;
-  context.textAlign = 'center';
-  context.textBaseline = 'middle';
-  context.fillText(text, width * 0.48, boardMiddle);
-  context.restore();
-};
-
 class HeroAsciiSafe extends React.Component {
   constructor(props) {
     super(props);
@@ -89,10 +53,11 @@ function NavAsciiLabel({ text, className = '' }) {
         <ASCIIText
           text={effectText}
           enableWaves={false}
+          enableRotation={false}
           asciiFontSize={1}
           textFontSize={140}
           textColor="#fdf9f3"
-          planeBaseHeight={20}
+          planeBaseHeight={16}
         />
       </HeroAsciiSafe>
     </span>
@@ -283,13 +248,13 @@ const stockCaseStudy = {
   showExperimentNumbers: false,
   focusTags: ['Python Automation', 'AI Analysis', 'Markdown Reports', 'Market Research'],
   summary:
-    'A command-line research assistant designed to scan a personal NASDAQ and US stock watchlist, detect stocks falling relative to the previous regular-session close, use ChatGPT-assisted analysis to explain possible causes, and generate a daily report.',
+    'A command-line research assistant that analyses a personal US stock watchlist using predefined strategies, uses ChatGPT to investigate market movements, executes simulated trades, and tracks strategy performance through daily reports.',
   stats: [],
   sections: [
     {
       title: 'Situation',
       body:
-        'I was learning about stock trading and became increasingly interested in systematic, short-term strategies. While short-term trading is highly uncertain and can easily become speculative when decisions are driven by intuition, quantitative trading offers a way to make those decisions more structured, repeatable, and testable. Before committing any real capital, I wanted to understand whether I could build a trading workflow that could consistently collect market data, evaluate opportunities, apply predefined rules, and execute trades without relying on impulse or emotion. This led me to build a quantitative trading system in a paper-trading environment, where I could test the strategy and automation safely before considering any real-world deployment.'
+        'I was learning about stock trading and became increasingly interested in systematic, short-term strategies. While short-term trading is highly uncertain and can easily become speculative when decisions are driven by intuition, quantitative trading offers a way to make those decisions more structured, repeatable, and testable. Before committing any real capital, I wanted to understand whether I could build a trading workflow that could consistently collect market data, evaluate opportunities, apply predefined rules, and execute trades without relying on impulse or emotion. This led me to build a quantitative trading system that calls Alpaca's paper-trading API to simulate the strategy in real time on a paper account, so I could test the automation safely before considering any real-world deployment.'
     },
     {
       title: 'Tasks',
@@ -662,9 +627,7 @@ function ProjectCaseStudyPage({ caseStudy }) {
             </div>
             <aside className="case-study-build-log" aria-labelledby="stock-build-log-title">
               <h2 id="stock-build-log-title">Build Log</h2>
-              <div className="case-study-build-log-placeholder">
-                <span>Updates coming soon</span>
-              </div>
+              <p>The next task is to add a weekly module that automatically updates live returns and pushes the data to GitHub.</p>
             </aside>
           </section>
         ) : (
@@ -841,11 +804,6 @@ function App() {
         <div className="hero-shade" />
 
         <div className="hero-editorial page-shell">
-          <div className="hero-topline">
-            <span>MSc HCI / University of Nottingham</span>
-            <h1>{profile.name}</h1>
-          </div>
-
           <div className="hero-ascii" aria-label={heroAsciiText}>
             <HeroAsciiSafe>
               <ASCIIText
@@ -864,36 +822,19 @@ function App() {
               options={[
                 { id: 'selected-works', label: 'Selected works', href: '#personal-projects' },
                 { id: 'academic-works', label: 'Academic works', href: '#projects' },
-                { id: 'toolbox', label: 'Toolbox', href: '#toolbox' }
+                { id: 'toolbox', label: 'Toolbox', href: '#toolbox' },
+                { id: 'about-me', label: aboutMeLabel, href: aboutMeHash }
               ]}
             />
           </section>
 
-          <section className="about-entry" id="about" aria-label="About me page">
+          <section className="about-entry" id="about" aria-label="How I built this website">
             <AboutGlowCard
               href={howIBuiltThisHash}
               title="How I built this website"
               process="IDEA → DESIGN → AI→ CODE → ITERATE"
               cta="Explore my workflow →"
             />
-            <a className="about-signpost" href={aboutMeHash} aria-label={aboutMeLabel}>
-              <HeroAsciiSafe fallback={<span className="about-signpost-fallback">{aboutMeLabel}</span>}>
-                <div className="about-signpost-board">
-                  <div className="about-signpost-ascii" aria-hidden="true">
-                    <ASCIIText
-                      text={aboutMeLabel}
-                      enableWaves={0.28}
-                      asciiFontSize={1}
-                      textColor="#fdf9f3"
-                      planeBaseHeight={16}
-                      textureRenderer={drawAboutSignpostTexture}
-                      textureWidth={720}
-                      textureHeight={420}
-                    />
-                  </div>
-                </div>
-              </HeroAsciiSafe>
-            </a>
           </section>
 
         </div>

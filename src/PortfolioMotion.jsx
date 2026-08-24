@@ -23,11 +23,7 @@ function PortfolioMotion() {
         '--hero-after-opacity': 0.78
       });
 
-      gsap.set('.hero-topline span, .hero-topline h1', {
-        willChange: 'transform, clip-path, opacity, filter'
-      });
-
-      const openingTimeline = gsap
+      gsap
         .timeline({ defaults: { ease: slowEase } })
         .fromTo(
           '.sidebar-shell',
@@ -47,54 +43,11 @@ function PortfolioMotion() {
           0.06
         )
         .fromTo(
-          '.hero-topline span',
-          { y: 34, autoAlpha: 0, clipPath: 'inset(0 0 100% 0)', filter: 'blur(8px)' },
-          { y: 0, autoAlpha: 1, clipPath: 'inset(0 0 0% 0)', filter: 'blur(0px)', duration: 1.05 },
-          0.48
-        )
-        .fromTo(
-          '.hero-topline h1',
-          {
-            x: -96,
-            scaleX: 0.64,
-            autoAlpha: 0,
-            clipPath: 'inset(0 100% 0 0)',
-            filter: 'blur(12px)'
-          },
-          {
-            x: 0,
-            scaleX: 1,
-            autoAlpha: 1,
-            clipPath: 'inset(0 0% 0 0)',
-            filter: 'blur(0px)',
-            duration: 1.55,
-            transformOrigin: 'left center'
-          },
-          0.62
-        )
-        .fromTo(
-          '.about-signpost',
-          { y: 28, autoAlpha: 0, scale: 0.94, filter: 'blur(10px)' },
-          {
-            y: 0,
-            autoAlpha: 1,
-            scale: 1,
-            filter: 'blur(0px)',
-            duration: 1.05,
-            clearProps: 'transform,filter'
-          },
-          0.28
-        )
-        .fromTo(
           '.hero-section-switch',
           { y: 24, autoAlpha: 0, filter: 'blur(10px)' },
           { y: 0, autoAlpha: 1, filter: 'blur(0px)', duration: 1.05, clearProps: 'transform,filter' },
           0.32
         );
-
-      openingTimeline.set('.hero-topline span, .hero-topline h1', {
-        clearProps: 'willChange,filter,clipPath'
-      });
 
       const sections = gsap.utils.toArray('.projects, .personal-projects, .toolbox');
 

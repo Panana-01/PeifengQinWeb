@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { ArrowLeft, ArrowRight, Check, MonitorSmartphone } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import './WebsiteWorkflowPage.css';
 
 const workflowSteps = [
@@ -10,7 +9,6 @@ const workflowSteps = [
     title: 'A practical reason to build',
     body:
       'Ahead of graduating in September, I began preparing my CV and applying for roles. I quickly realised that the work I wanted to apply for needed more than a document - it needed a portfolio I could shape and keep developing.',
-    note: 'Decision: build a personal website from scratch.'
   },
   {
     id: 'first-prototype',
@@ -19,7 +17,6 @@ const workflowSteps = [
     title: 'From a CV to a working homepage',
     body:
       'I had never built a website before. I followed tutorials, gave Codex my CV and used references from motion-design libraries to assemble the first version. The result proved that I could create a functioning site, but it also exposed the limits of a prompt-only workflow.',
-    note: 'Outcome: a usable first version and a much clearer set of questions.'
   },
   {
     id: 'prompt-bottleneck',
@@ -31,7 +28,6 @@ const workflowSteps = [
     solutionTitle: 'Move to a hybrid workflow',
     solution:
       'I explored Figma-to-code bridges first, but the live two-way options available to me were not reliable enough for this project. I kept Codex for reasoning, debugging and larger changes, then used Cursor to inspect and directly edit React and CSS when I needed fast layout control.',
-    takeaways: ['AI for reasoning and larger changes', 'Direct code editing for precise iteration', 'Browser preview as immediate feedback']
   },
   {
     id: 'code-literacy',
@@ -43,7 +39,6 @@ const workflowSteps = [
     solutionTitle: 'Create a manual-code guide',
     solution:
       'I created a reusable manual-code-guide skill. Before making a change, it explains which file owns the behaviour, how the relevant HTML/React structure and CSS selectors work, and what should be tested afterwards. This turned each edit into a small learning loop instead of a blind patch.',
-    takeaways: ['Understand ownership before editing', 'Explain selectors and layout rules', 'Test the result after every change']
   },
   {
     id: 'screen-space',
@@ -55,7 +50,6 @@ const workflowSteps = [
     solutionTitle: 'Separate editing from observation',
     solution:
       'I used an iPad as a second display: Cursor stayed on the laptop and the local Vite preview stayed visible on the second screen. Hot reload made the browser update after each save, so layout decisions became much easier to compare in real time.',
-    takeaways: ['Editor on the primary screen', 'Live browser on the second screen', 'One local URL for continuous feedback']
   },
   {
     id: 'layout-ownership',
@@ -67,7 +61,6 @@ const workflowSteps = [
     solutionTitle: 'Encode layout responsibility as project rules',
     solution:
       'I wrote rules that separate responsibilities: a parent container owns page-level arrangement; a component owns its internal presentation. Flexbox or Grid is the default for major UI structure, using gap, padding, margin, max-width and alignment. Absolute positioning is reserved mainly for decorative layers such as particles, overlays and badges.',
-    takeaways: ['Parent owns arrangement', 'Component owns internal styling', 'Flex/Grid before absolute positioning']
   },
   {
     id: 'version-trust',
@@ -79,7 +72,6 @@ const workflowSteps = [
     solutionTitle: 'Make the running source traceable',
     solution:
       'I standardised the preview workflow around one Git checkout, an explicitly started Vite server and one known local URL. I verify the working directory and port, rebuild before checking static output, and treat src plus the active dev server as the editing source of truth.',
-    takeaways: ['One checkout and one active port', 'Verify the server working directory', 'Rebuild before static preview']
   },
   {
     id: 'responsive-qa',
@@ -91,80 +83,37 @@ const workflowSteps = [
     solutionTitle: 'Turn responsiveness into a repeatable QA pass',
     solution:
       'I established a sequence instead of trying to perfect every size at once: make broad changes at 1440px, stabilise desktop, refine tablet, refine mobile, then run an all-size check. I use DevTools for observation and prefer responsive constraints such as Grid, Flexbox, clamp(), max-width and deliberate breakpoints.',
-    takeaways: ['1440px broad edit', 'Desktop, tablet and mobile refinement', 'Final all-size QA']
   }
 ];
 
-function SolutionControl({ step, side }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const popoverId = `${step.id}-solution`;
-
-  const closeWhenFocusLeaves = (event) => {
-    if (!event.currentTarget.contains(event.relatedTarget)) setIsOpen(false);
-  };
-
+function SolutionPanel({ step }) {
   return (
-    <div
-      className={`workflow-solution-control is-${side}${isOpen ? ' is-open' : ''}`}
-      onMouseEnter={() => setIsOpen(true)}
-      onMouseLeave={() => setIsOpen(false)}
-      onFocus={() => setIsOpen(true)}
-      onBlur={closeWhenFocusLeaves}
-      onKeyDown={(event) => {
-        if (event.key === 'Escape') {
-          setIsOpen(false);
-          event.currentTarget.querySelector('button')?.focus();
-        }
-      }}
-    >
-      <button
-        className="workflow-solution-button"
-        type="button"
-        aria-expanded={isOpen}
-        aria-controls={popoverId}
-        onClick={() => setIsOpen((current) => !current)}
-      >
-        Solution
-        <ArrowRight size={16} aria-hidden="true" />
-      </button>
-
-      <aside className="workflow-solution-popover" id={popoverId} aria-hidden={!isOpen}>
-        <span className="workflow-solution-kicker">Solution</span>
-        <h3>{step.solutionTitle}</h3>
-        <p>{step.solution}</p>
-        <ul>
-          {step.takeaways.map((takeaway) => (
-            <li key={takeaway}>
-              <Check size={15} aria-hidden="true" />
-              <span>{takeaway}</span>
-            </li>
-          ))}
-        </ul>
-      </aside>
-    </div>
+    <aside className="workflow-solution" aria-label={step.solutionTitle}>
+      <span className="workflow-solution-kicker">Solution</span>
+      <h3>{step.solutionTitle}</h3>
+      <p>{step.solution}</p>
+    </aside>
   );
 }
 
 function WorkflowStep({ step, index }) {
-  const side = index % 2 === 0 ? 'left' : 'right';
   const isProblem = step.type === 'problem';
 
   return (
-    <article className={`workflow-step is-${side}${isProblem ? ' is-problem' : ' is-milestone'}`}>
+    <article
+      className={`workflow-step${isProblem ? ' is-problem' : ' is-milestone'}`}
+      aria-label={step.title}
+    >
       <div className="workflow-marker" aria-hidden="true">
         <span>{String(index + 1).padStart(2, '0')}</span>
       </div>
 
       <div className="workflow-node">
         <span className="workflow-node-label">{step.label}</span>
-        <h2>{step.title}</h2>
         {isProblem ? <p className="workflow-problem-copy">{step.problem}</p> : <p>{step.body}</p>}
-        {isProblem ? (
-          <SolutionControl step={step} side={side} />
-        ) : (
-          <p className="workflow-milestone-note">{step.note}</p>
-        )}
       </div>
+
+      {isProblem ? <SolutionPanel step={step} /> : null}
     </article>
   );
 }
@@ -173,9 +122,8 @@ function WebsiteWorkflowPage() {
   return (
     <div className="workflow-page">
       <header className="workflow-header">
-        <a className="workflow-back" href="#top">
+        <a className="workflow-back" href="#top" aria-label="Back to home">
           <ArrowLeft size={18} aria-hidden="true" />
-          Back to home
         </a>
       </header>
 
@@ -185,15 +133,6 @@ function WebsiteWorkflowPage() {
           <WorkflowStep step={step} index={index} key={step.id} />
         ))}
       </main>
-
-      <footer className="workflow-outcome">
-        <MonitorSmartphone size={28} aria-hidden="true" />
-        <div>
-          <span>Current loop</span>
-          <h2>Intent → AI reasoning → direct code → live browser → responsive QA → Git checkpoint</h2>
-          <p>The website is still evolving, but the process is now deliberate, testable and recoverable.</p>
-        </div>
-      </footer>
     </div>
   );
 }

@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react';
 const defaultOptions = [
   { id: 'selected-works', label: 'Selected works', href: '#personal-projects' },
   { id: 'academic-works', label: 'Academic works', href: '#projects' },
-  { id: 'toolbox', label: 'Toolbox', href: '#toolbox' }
+  { id: 'toolbox', label: 'Toolbox', href: '#toolbox' },
+  { id: 'about-me', label: 'About me', href: '#about-me' }
 ];
 
 function GlitchCheckbox({ options = defaultOptions }) {

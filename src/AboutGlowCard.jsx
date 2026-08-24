@@ -157,7 +157,8 @@ function AboutGlowCard({
             text={`${title}\n${process}\n${cta}`}
             enableWaves={false}
             enableRotation={false}
-            asciiFontSize={1}
+            enableHueRotate={false}
+            asciiFontSize={0.5}
             textColor="#fdf9f3"
             planeBaseHeight={24.85}
             textureRenderer={drawAboutGlowCardTexture}
