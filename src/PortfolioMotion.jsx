@@ -43,8 +43,8 @@ function PortfolioMotion() {
           0.06
         )
         .fromTo(
-          '.hero-section-switch',
-          { y: 24, autoAlpha: 0, filter: 'blur(10px)' },
+          '.hero-section-switch .glitch-checkbox',
+          { y: -18, autoAlpha: 0, filter: 'blur(10px)' },
           { y: 0, autoAlpha: 1, filter: 'blur(0px)', duration: 1.05, clearProps: 'transform,filter' },
           0.32
         );

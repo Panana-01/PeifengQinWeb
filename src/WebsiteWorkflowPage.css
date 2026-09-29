@@ -1,8 +1,8 @@
 .workflow-page {
-  --workflow-coral: #ff6d5f;
-  --workflow-coral-soft: rgba(255, 109, 95, 0.13);
-  --workflow-cyan: #66d9ff;
-  --workflow-cyan-soft: rgba(102, 217, 255, 0.12);
+  --workflow-coral: #ff0058;
+  --workflow-coral-soft: rgba(255, 0, 88, 0.13);
+  --workflow-cyan: #03a9f4;
+  --workflow-cyan-soft: rgba(3, 169, 244, 0.12);
   --workflow-ink: #05070a;
   position: relative;
   z-index: 1;
@@ -38,7 +38,7 @@
 
 .workflow-back:hover,
 .workflow-back:focus-visible {
-  border-color: rgba(102, 217, 255, 0.58);
+  border-color: color-mix(in srgb, var(--workflow-cyan) 58%, transparent);
   color: #fff;
   transform: translateX(-3px);
 }
@@ -96,9 +96,9 @@
 }
 
 .workflow-step.is-problem .workflow-marker {
-  border-color: rgba(255, 109, 95, 0.7);
-  color: #ff9a8e;
-  box-shadow: 0 0 0 7px rgba(4, 9, 14, 0.92), 0 0 28px rgba(255, 109, 95, 0.16);
+  border-color: color-mix(in srgb, var(--workflow-coral) 70%, transparent);
+  color: color-mix(in srgb, var(--workflow-coral) 72%, white);
+  box-shadow: 0 0 0 7px rgba(4, 9, 14, 0.92), 0 0 28px color-mix(in srgb, var(--workflow-coral) 16%, transparent);
 }
 
 .workflow-node {
@@ -117,7 +117,7 @@
 }
 
 .workflow-step.is-problem .workflow-node {
-  border-color: rgba(255, 109, 95, 0.24);
+  border-color: color-mix(in srgb, var(--workflow-coral) 24%, transparent);
 }
 
 .workflow-step.is-problem .workflow-node::before {
@@ -136,7 +136,7 @@
 }
 
 .workflow-step.is-problem .workflow-node-label {
-  color: #ff8f83;
+  color: color-mix(in srgb, var(--workflow-coral) 72%, white);
 }
 
 .workflow-node > p {
@@ -156,10 +156,10 @@
   grid-row: 1;
   min-width: 0;
   padding: clamp(24px, 3.2vw, 38px);
-  border: 1px solid rgba(102, 217, 255, 0.34);
+  border: 1px solid color-mix(in srgb, var(--workflow-cyan) 34%, transparent);
   border-radius: 14px;
   background:
-    linear-gradient(145deg, rgba(102, 217, 255, 0.1), transparent 46%),
+    linear-gradient(145deg, color-mix(in srgb, var(--workflow-cyan) 10%, transparent), transparent 46%),
     rgba(7, 13, 19, 0.92);
   box-shadow: 0 26px 80px rgba(0, 0, 0, 0.22);
 }

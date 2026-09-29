@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
   ArrowLeft,
@@ -8,8 +8,8 @@ import {
 } from 'lucide-react';
 import MagicBentoEffects from './MagicBentoEffects';
 import PortfolioMotion from './PortfolioMotion';
-import VenemCaseStudyPage from './VenemCaseStudyPage';
 import PixelStarfield from './PixelStarfield';
+import ProjectShowcase, { isProjectShowcaseHash, projectShowcases } from './ProjectShowcase';
 import ASCIIText from './ASCIIText';
 import GlitchCheckbox from './GlitchCheckbox';
 import AboutGlowCard from './AboutGlowCard';
@@ -84,7 +84,9 @@ const projects = [
   {
     title: 'Kitchen Inventory Chatbot',
     detailHash: '#kitchen-inventory-chatbot',
-    image: '/assets/project-chatbot-screenshot.png'
+    image: '/assets/project-chatbot-screenshot.png',
+    summary:
+      'To make inventory tasks easier through conversation, I built a chatbot that understands commands, remembers context, and confirms actions before removing items.'
   },
   {
     title: 'Ethnography Study for a Shared Meal',
@@ -93,17 +95,23 @@ const projects = [
     image: '/assets/project-meal-photo.webp',
     tags: ['Ethnography', 'Interaction Analysis', 'Design Implications'],
     description:
-      'A field research project across shared-meal sessions, documenting talk, gesture, spatial layout, tools, and coordination patterns in domestic settings.'
+      'A field research project across shared-meal sessions, documenting talk, gesture, spatial layout, tools, and coordination patterns in domestic settings.',
+    summary:
+      'To understand how people coordinate during a shared meal, I studied their talk, gestures, movement, and use of space to identify design opportunities.'
   },
   {
     title: 'Chaotic Rehab Clinic',
     detailHash: '#chaotic-rehab-clinic',
-    image: '/assets/project-rehab-screenshot.png'
+    image: '/assets/project-rehab-screenshot.png',
+    summary:
+      'To make a complex clinic simulation understandable, I connected diagnosis, treatment, feedback, and progression into a clear, repeatable game loop.'
   },
   {
     title: 'Attack and Defend',
     detailHash: '#attack-and-defend',
-    image: '/assets/project-attack-defend-screenshot.png'
+    image: '/assets/project-attack-defend-screenshot.png',
+    summary:
+      'To support two-player VR/MR play in a limited physical space, I designed asymmetric roles, readable feedback, and safety-aware movement boundaries'
   }
 ];
 
@@ -112,13 +120,17 @@ const personalProjects = [
     title: 'English Learning Content Account on Douyin',
     visual: 'douyin',
     image: '/assets/personal-douyin-account.jpg',
-    detailHash: '#douyin-content-account'
+    detailHash: '#douyin-content-account',
+    summary:
+      'To make English-learning videos more engaging and sustainable to produce, I tested content formats and built an AI-assisted publishing workflow.'
   },
   {
     title: 'Rule-based quantitative trading stimulation',
     visual: 'stock',
     image: '/assets/personal-alpaca-paper-trading.png',
-    detailHash: '#stock-research-assistant'
+    detailHash: '#stock-research-assistant',
+    summary:
+      'To test trading ideas without relying on impulse or risking real money, I built a rule-based workflow that evaluates stocks and executes simulated trades.'
   }
 ];
 
@@ -152,6 +164,11 @@ const toolboxItems = [
     logo: '/assets/tool-cursor.svg',
     logoClass: 'toolbox-logo-invert',
     accent: '#d7e4ee'
+  },
+  {
+    name: 'Python',
+    logo: '/assets/python-logo-only.png',
+    accent: '#3776ab'
   },
   {
     name: 'Premiere Pro',
@@ -705,6 +722,9 @@ function App() {
     () => window.matchMedia('(max-width: 760px)').matches || window.scrollY > 80
   );
   const [currentHash, setCurrentHash] = useState(() => window.location.hash);
+  const hashBeforeChange = useRef(window.location.hash);
+  const showcaseOpenedFromHistory = useRef(false);
+  const pendingCardFocus = useRef('');
 
   useEffect(() => {
     let frameId = 0;
@@ -727,14 +747,40 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const handleHashChange = () => setCurrentHash(window.location.hash);
+    const handleHashChange = () => {
+      const nextHash = window.location.hash;
+      const previousHash = hashBeforeChange.current;
+      if (isProjectShowcaseHash(previousHash) && !isProjectShowcaseHash(nextHash)) {
+        pendingCardFocus.current = previousHash;
+      }
+      if (isProjectShowcaseHash(nextHash) && !isProjectShowcaseHash(previousHash)) {
+        showcaseOpenedFromHistory.current = true;
+      }
+      if (!isProjectShowcaseHash(nextHash)) {
+        showcaseOpenedFromHistory.current = false;
+      }
+      hashBeforeChange.current = nextHash;
+      setCurrentHash(nextHash);
+    };
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
   useEffect(() => {
+    if (isProjectShowcaseHash(currentHash)) return;
+
+    const closedHash = pendingCardFocus.current;
+    if (closedHash) {
+      pendingCardFocus.current = '';
+      window.requestAnimationFrame(() => {
+        const card = document.querySelector(`a[data-project-card][href="${closedHash}"]`);
+        card?.focus();
+        card?.scrollIntoView({ block: 'center', behavior: 'auto' });
+      });
+      return;
+    }
+
     if (
-      caseStudiesByHash[currentHash] ||
       currentHash === aboutMeHash ||
       currentHash === howIBuiltThisHash
     ) {
@@ -756,16 +802,25 @@ function App() {
     }
   };
 
-  const activeCaseStudy = caseStudiesByHash[currentHash];
+  const activeShowcase = projectShowcases[currentHash] || null;
   const isAboutMePage = currentHash === aboutMeHash;
   const isHowIBuiltThisPage = currentHash === howIBuiltThisHash;
-  const isCaseStudy = Boolean(activeCaseStudy);
-  const isDetailPage = isCaseStudy || isAboutMePage || isHowIBuiltThisPage;
+  const isDetailPage = isAboutMePage || isHowIBuiltThisPage;
+  const closeShowcase = useCallback(() => {
+    if (showcaseOpenedFromHistory.current) {
+      window.history.back();
+      return;
+    }
+    const fallback = projectShowcases[window.location.hash]?.returnHash || '#projects';
+    if (window.location.hash !== fallback) {
+      window.location.hash = fallback;
+    }
+  }, []);
 
   return (
     <>
       <PixelStarfield />
-      <main>
+      <main inert={activeShowcase ? true : undefined}>
       <MagicBentoEffects />
       {isDetailPage ? null : <PortfolioMotion />}
       {isDetailPage ? null : (
@@ -788,18 +843,22 @@ function App() {
           </header>
         </div>
       )}
-      {isCaseStudy ? (
-        currentHash === '#kitchen-inventory-chatbot' ? (
-          <VenemCaseStudyPage />
-        ) : (
-          <ProjectCaseStudyPage caseStudy={activeCaseStudy} />
-        )
-      ) : isHowIBuiltThisPage ? (
+      {isHowIBuiltThisPage ? (
         <HowIBuiltThisPage />
       ) : isAboutMePage ? (
         <AboutMePage />
       ) : (
       <>
+      <nav className="hero-section-switch" aria-label="Portfolio sections">
+        <GlitchCheckbox
+          options={[
+            { id: 'selected-works', label: 'Selected works', href: '#personal-projects' },
+            { id: 'academic-works', label: 'Academic works', href: '#projects' },
+            { id: 'toolbox', label: 'Toolbox', href: '#toolbox' },
+            { id: 'about-me', label: aboutMeLabel, href: aboutMeHash }
+          ]}
+        />
+      </nav>
       <section className="hero" id="top">
         <div className="hero-shade" />
 
@@ -808,25 +867,15 @@ function App() {
             <HeroAsciiSafe>
               <ASCIIText
                 text={heroAsciiText}
-                enableWaves={true}
-                asciiFontSize={8}
+                enableWaves={0.2}
+                enableRotation={0.5}
+                asciiFontSize={5}
                 textFontSize={500}
                 textColor="#fdf9f3"
                 planeBaseHeight={15}
               />
             </HeroAsciiSafe>
           </div>
-
-          <section className="hero-section-switch" aria-label="Portfolio sections">
-            <GlitchCheckbox
-              options={[
-                { id: 'selected-works', label: 'Selected works', href: '#personal-projects' },
-                { id: 'academic-works', label: 'Academic works', href: '#projects' },
-                { id: 'toolbox', label: 'Toolbox', href: '#toolbox' },
-                { id: 'about-me', label: aboutMeLabel, href: aboutMeHash }
-              ]}
-            />
-          </section>
 
           <section className="about-entry" id="about" aria-label="How I built this website">
             <AboutGlowCard
@@ -861,6 +910,7 @@ function App() {
                 </div>
                 <div className="project-content">
                   <h3>{project.title}</h3>
+                  {project.summary ? <p>{project.summary}</p> : null}
                 </div>
               </>
             );
@@ -868,7 +918,7 @@ function App() {
             return (
               <article className="project-card personal-project-card" key={project.title}>
                 {project.detailHash ? (
-                  <a className="personal-project-card-link personal-project-detail-link" href={project.detailHash}>
+                  <a className="personal-project-card-link personal-project-detail-link" href={project.detailHash} data-project-card="true">
                     {cardContent}
                   </a>
                 ) : (
@@ -885,12 +935,13 @@ function App() {
         <div className="project-grid">
           {projects.map((project, index) => (
             <article className={`project-card project-card-${index + 1}`} key={project.title}>
-              <a className="personal-project-card-link personal-project-detail-link" href={project.detailHash}>
+              <a className="personal-project-card-link personal-project-detail-link" href={project.detailHash} data-project-card="true">
                 <div className="project-image">
                   <img src={project.image} alt={`${project.title} project visual`} loading="lazy" decoding="async" />
                 </div>
                 <div className="project-content">
                   <h3>{project.title}</h3>
+                  {project.summary ? <p>{project.summary}</p> : null}
                 </div>
               </a>
             </article>
@@ -948,6 +999,7 @@ function App() {
       )}
 
       </main>
+      {activeShowcase ? <ProjectShowcase study={activeShowcase} onClose={closeShowcase} /> : null}
     </>
   );
 }

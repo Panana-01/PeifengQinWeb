@@ -235,7 +235,6 @@ function VenemCaseStudyPage() {
           </div>
 
           <div className="venem-hero-demo venem-reveal" id="venem-demo">
-            <div className="venem-demo-orbit" aria-hidden="true" />
             <figure className="venem-demo-image-card" aria-label="Venem chatbot running in PyCharm">
               <img src="/assets/venem-demo-screenshot.png" alt="Venem chatbot demo running in PyCharm" />
             </figure>

@@ -48,11 +48,11 @@ function mapRange(n, start, stop, start2, stop2) {
   return ((n - start) / (stop - start)) * (stop2 - start2) + start2;
 }
 
-function waveStrength(enableWaves) {
-  if (typeof enableWaves === 'number') {
-    return Math.max(0, Math.min(1, enableWaves));
+function clamp01(value) {
+  if (typeof value === 'number') {
+    return Math.max(0, Math.min(1, value));
   }
-  return enableWaves ? 1 : 0;
+  return value ? 1 : 0;
 }
 
 const PX_RATIO = typeof window !== 'undefined' ? window.devicePixelRatio : 1;
@@ -383,7 +383,7 @@ class CanvAscii {
         uTime: { value: 0 },
         mouse: { value: 1.0 },
         uTexture: { value: this.texture },
-        uEnableWaves: { value: waveStrength(this.enableWaves) }
+        uEnableWaves: { value: clamp01(this.enableWaves) }
       }
     });
 
@@ -469,14 +469,15 @@ class CanvAscii {
   }
 
   updateRotation() {
-    if (!this.enableRotation) {
+    const strength = clamp01(this.enableRotation);
+    if (strength <= 0) {
       this.mesh.rotation.x = 0;
       this.mesh.rotation.y = 0;
       return;
     }
 
-    const x = mapRange(this.mouse.y, 0, this.height, 0.5, -0.5);
-    const y = mapRange(this.mouse.x, 0, this.width, -0.5, 0.5);
+    const x = mapRange(this.mouse.y, 0, this.height, 0.5, -0.5) * strength;
+    const y = mapRange(this.mouse.x, 0, this.width, -0.5, 0.5) * strength;
 
     this.mesh.rotation.x += (x - this.mesh.rotation.x) * 0.05;
     this.mesh.rotation.y += (y - this.mesh.rotation.y) * 0.05;
