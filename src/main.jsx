@@ -852,8 +852,8 @@ function App() {
       <nav className="hero-section-switch" aria-label="Portfolio sections">
         <GlitchCheckbox
           options={[
-            { id: 'selected-works', label: 'Selected works', href: '#personal-projects' },
             { id: 'academic-works', label: 'Academic works', href: '#projects' },
+            { id: 'selected-works', label: 'Personal works', href: '#personal-projects' },
             { id: 'toolbox', label: 'Toolbox', href: '#toolbox' },
             { id: 'about-me', label: aboutMeLabel, href: aboutMeHash }
           ]}
@@ -889,8 +889,27 @@ function App() {
         </div>
       </section>
 
+      <section className="projects page-shell" id="projects">
+        <SectionHeader eyebrow="Academic Projects" />
+        <div className="project-grid">
+          {projects.map((project, index) => (
+            <article className={`project-card project-card-${index + 1}`} key={project.title}>
+              <a className="personal-project-card-link personal-project-detail-link" href={project.detailHash} data-project-card="true">
+                <div className="project-image">
+                  <img src={project.image} alt={`${project.title} project visual`} loading="lazy" decoding="async" />
+                </div>
+                <div className="project-content">
+                  <h3>{project.title}</h3>
+                  {project.summary ? <p>{project.summary}</p> : null}
+                </div>
+              </a>
+            </article>
+          ))}
+        </div>
+      </section>
+
       <section className="personal-projects page-shell" id="personal-projects">
-        <SectionHeader eyebrow="Selected Works" />
+        <SectionHeader eyebrow="Personal Works" />
         <div className="project-grid personal-project-grid">
           {personalProjects.map((project) => {
             const visualClass = `project-image personal-project-visual personal-project-visual-${project.visual}${
@@ -927,25 +946,6 @@ function App() {
               </article>
             );
           })}
-        </div>
-      </section>
-
-      <section className="projects page-shell" id="projects">
-        <SectionHeader eyebrow="Academic Projects" />
-        <div className="project-grid">
-          {projects.map((project, index) => (
-            <article className={`project-card project-card-${index + 1}`} key={project.title}>
-              <a className="personal-project-card-link personal-project-detail-link" href={project.detailHash} data-project-card="true">
-                <div className="project-image">
-                  <img src={project.image} alt={`${project.title} project visual`} loading="lazy" decoding="async" />
-                </div>
-                <div className="project-content">
-                  <h3>{project.title}</h3>
-                  {project.summary ? <p>{project.summary}</p> : null}
-                </div>
-              </a>
-            </article>
-          ))}
         </div>
       </section>
 

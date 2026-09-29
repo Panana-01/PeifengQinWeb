@@ -6,16 +6,10 @@ const projectShowcases = {
   '#kitchen-inventory-chatbot': {
     hash: '#kitchen-inventory-chatbot',
     returnHash: '#projects',
-    eyebrow: 'Interactive NLP-Based AI System / 2025',
+    eyebrow: 'Interactive NLP-Based AI System',
     title: 'Kitchen Inventory Chatbot',
     lede:
-      'To make inventory tasks easier through conversation, I built a chatbot that understands commands, remembers context, and confirms actions before removing items.',
-    hero: {
-      src: '/assets/venem-demo-screenshot.png',
-      alt: 'Venem chatbot demo running in PyCharm',
-      caption:
-        'Venem running in PyCharm. The terminal shows a live session: the bot introduces itself, answers a question, and waits for the next message.'
-    },
+      'Venem is a Python chatbot that lets people manage kitchen inventory in natural language, remembers the current conversation, and confirms changes before removing items.',
     overview: [
       {
         label: 'Goal',
@@ -37,105 +31,18 @@ const projectShowcases = {
     blocks: [
       {
         kind: 'steps',
-        eyebrow: 'The challenge',
-        title: 'Useful conversation without a large language model',
+        title: 'How it works',
         intro:
-          'The system had to recognise different goals, return relevant information, and keep enough context for the next turn. A failed match still needed a way forward.',
+          'Venem does not use a large language model. It matches a request to a supported intent, routes it through modules that share one ChatContext, and still offers a way forward when the match is weak.',
         steps: [
-          ['User expression', 'Someone asks in their own words.'],
-          ['Intent understanding', 'The closest supported intent is selected.'],
-          ['Context-aware response', 'The reply uses what the session already knows.']
-        ]
-      },
-      {
-        kind: 'cards',
-        eyebrow: 'What it can do',
-        title: 'Five jobs, one conversation',
-        items: [
-          ['Dataset-backed Q&A', 'Retrieves answers from more than 1,400 question-answer pairs.'],
-          ['Kitchen inventory', 'Adds, removes, and lists food items with quantities and units.'],
-          ['Identity memory', 'Remembers, changes, recalls, or forgets the user’s name during a session.'],
-          ['Contextual help', 'Adapts guidance according to the current conversation state.'],
-          ['Error recovery', 'After repeated recognition failures, offers a clear next step.']
-        ]
-      },
-      {
-        kind: 'steps',
-        eyebrow: 'How a reply is produced',
-        title: 'From an utterance to a stateful response',
-        intro:
-          'CountVectorizer and TF-IDF turn text into vectors. Cosine similarity finds the closest intent or question. Confidence thresholds reject weak matches. ChatContext keeps the state the reply depends on.',
-        steps: [
-          ['01  User input', 'A natural-language request enters the conversation loop.'],
-          ['02  Intent matching', 'TF-IDF vectors and cosine similarity identify the closest supported intent.'],
-          ['03  Module routing', 'The request goes to question answering, identity, inventory, or small talk.'],
-          ['04  Context update', 'ChatContext stores names, previous intent, inventory, and pending actions.'],
-          ['05  Response', 'A confidence-aware, stateful response is returned.']
-        ]
-      },
-      {
-        kind: 'flows',
-        eyebrow: 'Interaction flows',
-        title: 'Three conversations the system can hold',
-        items: [
-          {
-            eyebrow: 'Personalisation',
-            title: 'Remembering who the user is',
-            body: 'The name stays in the current session and is used in later replies.',
-            messages: [
-              ['user', 'My name is Alice.'],
-              ['bot', "Nice to meet you, Alice! I'll remember that."]
-            ]
-          },
-          {
-            eyebrow: 'Inventory',
-            title: 'Turning a sentence into structured stock',
-            body: 'A command is parsed into an item, a quantity, and a normalised unit.',
-            messages: [
-              ['user', 'Add 1L milk.'],
-              ['bot', 'Alice, I added 1 L milk to your inventory.'],
-              ['user', 'Show my kitchen inventory.'],
-              ['bot', 'Here is your kitchen inventory:\n• milk: 1 L']
-            ]
-          },
-          {
-            eyebrow: 'Confirmation',
-            title: 'Asking before something is removed',
-            body: 'A destructive action waits for an explicit yes or no.',
-            messages: [
-              ['user', 'Remove 1L milk.'],
-              ['bot', 'Do you want to remove 1 L milk from your inventory? Please type “yes” or “no”.'],
-              ['user', 'Yes.'],
-              ['bot', 'OK, I removed 1 L milk.']
-            ]
-          }
-        ]
-      },
-      {
-        kind: 'stack',
-        eyebrow: 'System structure',
-        title: 'Modules that share one conversational state',
-        groups: [
-          { label: 'Interface and orchestration', items: ['chatbot_demo.py'] },
-          {
-            label: 'Conversation modules',
-            items: [
-              'Intent Management',
-              'Question Answering',
-              'Small Talk',
-              'Identity Management',
-              'Kitchen Inventory',
-              'Discoverability'
-            ]
-          },
-          { label: 'Shared services', items: ['ChatContext', 'Similarity Calculation'] },
-          { label: 'Data', items: ['Intent Examples', 'Question–Answer Dataset', 'Small-Talk Dataset'] }
+          ['Match', 'TF-IDF and cosine similarity find the closest intent or question. A weak match is rejected.'],
+          ['Route', 'The request goes to inventory, identity, question answering, or small talk.'],
+          ['Reply', 'ChatContext stores the name, inventory, and any pending action, then returns a stateful response.']
         ]
       },
       {
         kind: 'decisions',
-        eyebrow: 'Design decisions',
-        title: 'How the dialogue stays recoverable',
+        title: 'Design decisions',
         items: [
           {
             problem: 'Different phrases can express the same inventory action.',
@@ -145,43 +52,21 @@ const projectShowcases = {
           {
             problem: 'A failed match can make a chatbot feel broken.',
             response:
-              'Staged fallbacks, contextual help, and discoverability prompts let someone continue without restarting the conversation.'
+              'Staged fallbacks, contextual help, and discoverability prompts let someone continue, with examples of supported commands, without restarting the conversation.'
           },
           {
             problem: 'Task commands and social conversation need different logic.',
             response:
-              'Task intents are separate from small talk and question answering. Lightweight state still keeps the name, the prior intent, and the failure count.'
+              'Task intents are separate from small talk and question answering. Shared state keeps the name, the prior intent, and the failure count, and every inventory action returns an immediate status.'
           }
         ]
-      },
-      {
-        kind: 'cards',
-        eyebrow: 'Conversational UX',
-        title: 'Decisions that make the system easier to follow',
-        items: [
-          ['Discoverability', 'People can ask for help and receive examples of supported commands.'],
-          ['Feedback', 'Every inventory action returns an immediate status update.'],
-          ['Error prevention', 'Removal requires an explicit confirmation.'],
-          ['Context', 'Replies adapt to the name, the previous intent, and any pending action.']
-        ]
-      },
-      {
-        kind: 'ending',
-        outcome:
-          'Venem handles inventory commands, question answering, small talk, and name memory in one session, and it checks before it deletes an item.',
-        reflection:
-          'Conversational behaviour here comes from retrieval, explicit state, and feedback designed into the replies. The same work also showed the limits of a fixed dataset and rule-based language patterns.',
-        next: [
-          'Add persistent user and inventory storage',
-          'Support a wider range of natural-language expressions',
-          'Evaluate intent accuracy with a labelled test set',
-          'Test the guidance and recovery flows with users',
-          'Improve multilingual support',
-          'Add automated tests and deployment documentation'
-        ],
-        note: 'Source code and a public demo link are not published on this page yet.'
       }
-    ]
+    ],
+    liveDemo: {
+      embedUrl: 'https://chatbot-xnti8rmjnoqzic9eqr26re.streamlit.app/?embed=true',
+      repoUrl: 'https://github.com/Panana-01/chatbot',
+      frameTitle: 'Venem kitchen inventory chatbot'
+    }
   },
   '#shared-meal-ethnography': {
     hash: '#shared-meal-ethnography',
@@ -617,6 +502,33 @@ function ChatTranscript({ messages }) {
   );
 }
 
+function LiveDemo({ demo }) {
+  return (
+    <div className="showcase-try">
+      {demo.repoUrl ? (
+        <div className="showcase-try-bar">
+          <a
+            className="showcase-github"
+            href={demo.repoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="View source on GitHub"
+          >
+            <img src="/assets/github.png" alt="" />
+          </a>
+        </div>
+      ) : null}
+      <div className="showcase-try-frame">
+        <iframe
+          title={demo.frameTitle}
+          src={demo.embedUrl}
+          loading="eager"
+        />
+      </div>
+    </div>
+  );
+}
+
 function SectionIntro({ eyebrow, title, intro, headingId }) {
   return (
     <header className="showcase-section-intro">
@@ -935,14 +847,18 @@ function ProjectShowcase({ study, onClose }) {
               <p className="showcase-eyebrow">{study.eyebrow}</p>
               <h2 id="showcase-title">{study.title}</h2>
               <p id="showcase-lede">{study.lede}</p>
-              <figure>
-                <img src={study.hero.src} alt={study.hero.alt} />
-                <figcaption>{study.hero.caption}</figcaption>
-              </figure>
+              {study.liveDemo ? (
+                <LiveDemo demo={study.liveDemo} />
+              ) : (
+                <figure>
+                  <img src={study.hero.src} alt={study.hero.alt} />
+                  <figcaption>{study.hero.caption}</figcaption>
+                </figure>
+              )}
             </header>
 
             <section className="showcase-section" aria-labelledby="showcase-overview-title">
-              <SectionIntro eyebrow="Project overview" title="At a glance" headingId="showcase-overview-title" />
+              <SectionIntro title="Project overview" headingId="showcase-overview-title" />
               <div className="showcase-overview">
                 {study.overview.map((item) => (
                   <article key={item.label}>
