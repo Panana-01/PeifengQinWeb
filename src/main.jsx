@@ -2,9 +2,14 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
   ArrowLeft,
+  BookOpen,
+  Brain,
+  Compass,
   GraduationCap,
   Mail,
-  MapPin
+  MapPin,
+  Mountain,
+  Users
 } from 'lucide-react';
 import MagicBentoEffects from './MagicBentoEffects';
 import PortfolioMotion from './PortfolioMotion';
@@ -570,6 +575,23 @@ function HowIBuiltThisPage() {
   return <WebsiteWorkflowPage />;
 }
 
+function BookPreview({ id, title, cover, author, year, description }) {
+  return (
+    <span className="about-book" tabIndex={0} aria-label={`${title} book details`} aria-describedby={id}>
+      <em>{title}</em>
+      <span className="about-book-popover" id={id} role="tooltip">
+        <img src={cover} alt={`${title} book cover`} loading="lazy" decoding="async" />
+        <span className="about-book-details">
+          <strong>{title}</strong>
+          <span>{author}</span>
+          <span>{year}</span>
+          <small>{description}</small>
+        </span>
+      </span>
+    </span>
+  );
+}
+
 function AboutMePage() {
   return (
     <div className="about-me-page">
@@ -584,6 +606,102 @@ function AboutMePage() {
           personCutoutImage={personCutout}
           episodes={profileEpisodes}
         />
+
+        <section className="about-personality" aria-labelledby="about-personality-title">
+          <header className="about-personality-header">
+            <span className="eyebrow">Beyond the résumé</span>
+            <h2 id="about-personality-title">How I work, learn, and explore</h2>
+            <p>
+              I’m collaborative, independently driven, and most energised by unfamiliar problems—whether I’m
+              building with a team, learning a new field, or travelling without a fixed route.
+            </p>
+          </header>
+
+          <div className="about-personality-grid">
+            <article className="about-personality-card magic-bento-card">
+              <span className="about-personality-icon" aria-hidden="true">
+                <Users size={22} />
+              </span>
+              <span className="about-personality-kicker">With people</span>
+              <h3>Collaboration gives ideas momentum</h3>
+              <p>
+                I enjoy working with others and have collaborated on several university projects. I value sharing
+                perspectives, making decisions together, and turning different strengths into one clear outcome.
+              </p>
+            </article>
+
+            <article className="about-personality-card magic-bento-card">
+              <span className="about-personality-icon" aria-hidden="true">
+                <Brain size={22} />
+              </span>
+              <span className="about-personality-kicker">Learning forward</span>
+              <h3>Building my path towards AI</h3>
+              <p>
+                I take my own development seriously. I’m now focusing that energy on AI—learning how it can support
+                research, design, and the useful personal tools I want to build.
+              </p>
+            </article>
+
+            <article className="about-personality-card about-personality-card-wide about-personality-card-books magic-bento-card">
+              <span className="about-personality-icon" aria-hidden="true">
+                <BookOpen size={22} />
+              </span>
+              <span className="about-personality-kicker">Ideas I return to</span>
+              <h3>Psychology, behaviour, and technology</h3>
+              <p>
+                Psychology, behavioural economics, and technology fascinate me because they meet naturally in HCI.
+                I’m currently reading{' '}
+                <BookPreview
+                  id="thinking-fast-and-slow-details"
+                  title="Thinking, Fast and Slow"
+                  cover="/assets/thinking-fast-and-slow.jpg"
+                  author="Daniel Kahneman"
+                  year="2011"
+                  description="A landmark account of how fast intuition and slow deliberation shape judgement and decision-making."
+                />
+                . The book that has influenced me most is{' '}
+                <BookPreview
+                  id="narrative-economics-details"
+                  title="Narrative Economics"
+                  cover="/assets/narrative-economics.jpg"
+                  author="Robert J. Shiller"
+                  year="2019"
+                  description="An exploration of how contagious stories spread through society and influence economic events and behaviour."
+                />
+                , which changed how I think about the stories behind collective behaviour.
+              </p>
+            </article>
+
+            <article className="about-personality-card about-personality-card-wide magic-bento-card">
+              <span className="about-personality-icon" aria-hidden="true">
+                <Mountain size={22} />
+              </span>
+              <span className="about-personality-kicker">My own rhythm</span>
+              <h3>Shared adventures, focused solitude</h3>
+              <p>
+                I love hiking, camping, and climbing with friends. I also value time alone: reading, learning
+                something new, and building personal projects such as this website and my own AI agents.
+              </p>
+            </article>
+          </div>
+
+          <article className="about-journey magic-bento-card">
+            <div className="about-journey-location">
+              <span className="about-personality-icon" aria-hidden="true">
+                <Compass size={24} />
+              </span>
+              <div>
+                <span className="about-personality-kicker">Currently exploring</span>
+                <h3>Istanbul, Türkiye</h3>
+              </div>
+            </div>
+            <p>
+              I’m travelling solo with only a loose idea of which countries I might visit. I like the uncertainty:
+              plans can change at any moment, unfamiliar situations become invitations to learn, and each difficulty
+              is something to understand and solve along the way.
+            </p>
+          </article>
+        </section>
       </div>
     </div>
   );

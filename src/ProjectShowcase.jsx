@@ -1,5 +1,5 @@
-import React, { useEffect, useLayoutEffect, useRef } from 'react';
-import { Bot } from 'lucide-react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { Bot, Maximize2, Minimize2, X } from 'lucide-react';
 import './ProjectShowcase.css';
 
 const projectShowcases = {
@@ -717,8 +717,9 @@ function playFolderOpen(layer, win, hash) {
   const backdrop = layer.querySelector('.showcase-backdrop');
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const settle = () => {
-    win.style.transition = 'none';
+    win.style.transition = '';
     win.style.transform = 'none';
+    win.style.transformOrigin = '';
     win.style.opacity = '1';
     if (backdrop) backdrop.style.opacity = '1';
   };
@@ -776,10 +777,67 @@ function playFolderOpen(layer, win, hash) {
   win.addEventListener('transitionend', onEnd);
 }
 
+function playBoundsMorph(win, first) {
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!win || !first || reduceMotion) return undefined;
+
+  const last = win.getBoundingClientRect();
+  const dx = first.left - last.left;
+  const dy = first.top - last.top;
+  const sx = first.width / last.width;
+  const sy = first.height / last.height;
+
+  if (Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5 && Math.abs(sx - 1) < 0.01 && Math.abs(sy - 1) < 0.01) {
+    return undefined;
+  }
+
+  const lastRadius = parseFloat(getComputedStyle(win).borderRadius) || 0;
+
+  win.style.transition = 'none';
+  win.style.transformOrigin = '0 0';
+  win.style.transform = `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`;
+  win.style.borderRadius = `${first.radius / Math.max(sx, 0.001)}px`;
+  void win.offsetWidth;
+
+  const ease = '420ms cubic-bezier(0.2, 0, 0, 1)';
+  win.style.transition = `transform ${ease}, border-radius ${ease}`;
+  win.style.transform = 'none';
+  win.style.borderRadius = `${lastRadius}px`;
+
+  const onEnd = (event) => {
+    if (event.target !== win || event.propertyName !== 'transform') return;
+    win.removeEventListener('transitionend', onEnd);
+    win.style.transition = '';
+    win.style.transform = 'none';
+    win.style.transformOrigin = '';
+    win.style.borderRadius = '';
+  };
+
+  win.addEventListener('transitionend', onEnd);
+  return () => win.removeEventListener('transitionend', onEnd);
+}
+
 function ProjectShowcase({ study, onClose }) {
   const layerRef = useRef(null);
   const dialogRef = useRef(null);
   const closeRef = useRef(null);
+  const pendingBoundsRef = useRef(null);
+  const [maximized, setMaximized] = useState(false);
+
+  const toggleMaximized = () => {
+    const win = dialogRef.current;
+    if (win) {
+      const rect = win.getBoundingClientRect();
+      pendingBoundsRef.current = {
+        left: rect.left,
+        top: rect.top,
+        width: rect.width,
+        height: rect.height,
+        radius: parseFloat(getComputedStyle(win).borderRadius) || 0
+      };
+    }
+    setMaximized((value) => !value);
+  };
 
   useLayoutEffect(() => {
     const layer = layerRef.current;
@@ -788,6 +846,13 @@ function ProjectShowcase({ study, onClose }) {
     playFolderOpen(layer, win, study.hash);
     return undefined;
   }, [study.hash]);
+
+  useLayoutEffect(() => {
+    const win = dialogRef.current;
+    const first = pendingBoundsRef.current;
+    pendingBoundsRef.current = null;
+    return playBoundsMorph(win, first);
+  }, [maximized]);
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -828,7 +893,7 @@ function ProjectShowcase({ study, onClose }) {
     <div className="showcase-layer" ref={layerRef}>
       <div className="showcase-backdrop" onMouseDown={onClose} />
       <div
-        className="showcase-window"
+        className={`showcase-window${maximized ? ' is-maximized' : ''}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="showcase-title"
@@ -837,9 +902,25 @@ function ProjectShowcase({ study, onClose }) {
         tabIndex={-1}
       >
         <div className="showcase-toolbar">
-          <button className="showcase-close" type="button" onClick={onClose} ref={closeRef}>
-            Close
-          </button>
+          <div className="showcase-window-controls">
+            <button
+              className="showcase-window-control"
+              type="button"
+              aria-label={maximized ? 'Restore window' : 'Maximize window'}
+              onClick={toggleMaximized}
+            >
+              {maximized ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+            </button>
+            <button
+              className="showcase-window-control is-close"
+              type="button"
+              aria-label="Close"
+              onClick={onClose}
+              ref={closeRef}
+            >
+              <X size={16} />
+            </button>
+          </div>
         </div>
         <div className="showcase-scroll" tabIndex={0}>
           <article className="showcase-article">

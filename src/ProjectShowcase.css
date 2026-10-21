@@ -20,6 +20,8 @@
   opacity: 0;
   transform: scale(0.86);
   --venem-accent: #03a9f4;
+  --window-control-width: 48px;
+  --window-control-height: 44px;
   display: flex;
   flex-direction: column;
   width: min(960px, 100%);
@@ -34,33 +36,54 @@
   color: var(--text);
 }
 
+.showcase-layer:has(.showcase-window.is-maximized) {
+  padding: 0;
+}
+
+.showcase-window.is-maximized {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+}
+
 .showcase-toolbar {
   display: flex;
   flex: none;
   justify-content: flex-end;
-  padding: 14px 16px;
+  align-items: stretch;
+  min-height: var(--window-control-height);
+  padding: 0;
   border-bottom: 1px solid rgba(230, 242, 250, 0.14);
   background: #121920;
 }
 
-.showcase-close {
-  min-height: 44px;
-  padding: 0 18px;
-  border: 1px solid rgba(230, 242, 250, 0.4);
-  border-radius: 999px;
-  color: #f4fbff;
-  background: rgba(236, 246, 252, 0.08);
-  font: inherit;
-  font-size: 14px;
-  font-weight: 700;
+.showcase-window-controls {
+  display: flex;
+}
+
+.showcase-window-control {
+  display: grid;
+  place-items: center;
+  width: var(--window-control-width);
+  height: var(--window-control-height);
+  padding: 0;
+  border: 0;
+  color: rgba(244, 251, 255, 0.82);
+  background: transparent;
   cursor: pointer;
 }
 
-.showcase-close:hover,
-.showcase-close:focus-visible {
-  border-color: #fff;
-  background: rgba(236, 246, 252, 0.16);
+.showcase-window-control:hover,
+.showcase-window-control:focus-visible {
+  color: #fff;
+  background: rgba(236, 246, 252, 0.1);
   outline: none;
+}
+
+.showcase-window-control.is-close:hover,
+.showcase-window-control.is-close:focus-visible {
+  color: #fff;
+  background: #e81123;
 }
 
 .showcase-scroll {
