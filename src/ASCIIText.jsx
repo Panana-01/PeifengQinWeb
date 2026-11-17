@@ -29,16 +29,18 @@ const fragmentShader = `
 varying vec2 vUv;
 uniform float mouse;
 uniform float uTime;
+uniform float uChroma;
 uniform sampler2D uTexture;
 
 void main() {
     float time = uTime;
     vec2 pos = vUv;
+    float chroma = uChroma;
 
     float move = sin(time + mouse) * 0.01;
-    float r = texture2D(uTexture, pos + cos(time * 2. - time + pos.x) * .01).r;
-    float g = texture2D(uTexture, pos + tan(time * .5 + pos.x - time) * .01).g;
-    float b = texture2D(uTexture, pos - cos(time * 2. + time + pos.y) * .01).b;
+    float r = texture2D(uTexture, pos + cos(time * 2. - time + pos.x) * .01 * chroma).r;
+    float g = texture2D(uTexture, pos + tan(time * .5 + pos.x - time) * .01 * chroma).g;
+    float b = texture2D(uTexture, pos - cos(time * 2. + time + pos.y) * .01 * chroma).b;
     float a = texture2D(uTexture, pos).a;
     gl_FragColor = vec4(r, g, b, a);
 }
@@ -306,6 +308,7 @@ class CanvAscii {
       enableWaves,
       enableRotation = true,
       enableHueRotate = true,
+      enableChroma = true,
       pixelGrid = false,
       textureRenderer,
       textureWidth,
@@ -326,6 +329,7 @@ class CanvAscii {
     this.enableWaves = enableWaves;
     this.enableRotation = enableRotation;
     this.enableHueRotate = enableHueRotate;
+    this.enableChroma = enableChroma;
     this.pixelGrid = pixelGrid;
     this.textureRenderer = textureRenderer;
     this.textureWidth = textureWidth;
@@ -383,7 +387,8 @@ class CanvAscii {
         uTime: { value: 0 },
         mouse: { value: 1.0 },
         uTexture: { value: this.texture },
-        uEnableWaves: { value: clamp01(this.enableWaves) }
+        uEnableWaves: { value: clamp01(this.enableWaves) },
+        uChroma: { value: clamp01(this.enableChroma) }
       }
     });
 
@@ -526,6 +531,7 @@ export default function ASCIIText({
   enableWaves = true,
   enableRotation = true,
   enableHueRotate = true,
+  enableChroma = true,
   pixelGrid = false,
   textureRenderer = null,
   textureWidth = 720,
@@ -552,6 +558,7 @@ export default function ASCIIText({
           enableWaves,
           enableRotation,
           enableHueRotate,
+          enableChroma,
           pixelGrid,
           textureRenderer,
           textureWidth,
@@ -628,6 +635,7 @@ export default function ASCIIText({
     enableWaves,
     enableRotation,
     enableHueRotate,
+    enableChroma,
     pixelGrid,
     textureRenderer,
     textureWidth,

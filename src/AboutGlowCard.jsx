@@ -133,15 +133,16 @@ class GlowCardAsciiSafe extends React.Component {
 function AboutGlowCard({
   href,
   title = 'How I built this website',
-  process = 'IDEA → DESIGN → AI→ CODE → ITERATE',
-  cta = 'Explore my workflow →'
+  process,
+  cta
 }) {
+  const lines = [title, process, cta].filter(Boolean);
   const Tag = href ? 'a' : 'div';
   const fallback = (
     <div className="about-glow-card-inner">
-      <p className="about-glow-card-line">{title}</p>
-      <p className="about-glow-card-line">{process}</p>
-      <p className="about-glow-card-line">{cta}</p>
+      {lines.map((line) => (
+        <p className="about-glow-card-line" key={line}>{line}</p>
+      ))}
     </div>
   );
 
@@ -149,15 +150,16 @@ function AboutGlowCard({
     <Tag
       className="about-glow-card"
       href={href}
-      aria-label={`${title}. ${process}. ${cta}`}
+      aria-label={lines.join('. ')}
     >
       <GlowCardAsciiSafe fallback={fallback}>
         <div className="about-glow-card-ascii" aria-hidden="true">
           <ASCIIText
-            text={`${title}\n${process}\n${cta}`}
+            text={lines.join('\n')}
             enableWaves={false}
             enableRotation={false}
             enableHueRotate={false}
+            enableChroma={false}
             asciiFontSize={0.5}
             textColor="#fdf9f3"
             planeBaseHeight={24.85}

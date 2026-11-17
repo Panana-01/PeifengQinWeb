@@ -19,6 +19,7 @@ import ASCIIText from './ASCIIText';
 import GlitchCheckbox from './GlitchCheckbox';
 import AboutGlowCard from './AboutGlowCard';
 import WebsiteWorkflowPage from './WebsiteWorkflowPage';
+import AiAgentsPage from './AiAgentsPage';
 import './styles.css';
 
 const heroAsciiText = 'Hey! Thank you for coming here';
@@ -84,6 +85,7 @@ const personCutout = profilePhoto;
 const aboutMeHash = '#about-me';
 const aboutMeLabel = 'About me';
 const howIBuiltThisHash = '#how-i-built-this';
+const aiAgentsHash = '#my-ai-agents';
 
 const projects = [
   {
@@ -520,18 +522,15 @@ function CinematicProfileHero({ profileData, backgroundImage, personCutoutImage,
 
         <div className="cinematic-orbit-lines" aria-hidden="true" />
 
-        <div className="cinematic-topbar">
-          <span className="cinematic-network">About me</span>
-        </div>
-
         <div className="cinematic-copy">
-          <span className="cinematic-kicker">Profile / MSc HCI</span>
           <h2>{profileData.name}</h2>
           <p>
-            Hi, I’m Peifeng. I’m an HCI researcher and designer based in the UK. I’m currently studying for a master’s
-            degree at the University of Nottingham and will graduate later this year. I use user research, interaction
-            design, and AI tools to create digital products that are simple, useful, and easy to use. In my free time,
-            I enjoy hiking, climbing, swimming, and camping.
+            MSc Human–Computer Interaction candidate with an engineering background and hands‑on experience building
+            AI‑enabled workflows, conversational systems, and interactive prototypes. Skilled in Python, automation,
+            data analysis, and user research, with experience translating real‑world problems into practical technical
+            solutions. Comfortable building AI‑native workflows using reusable skills, structured rules, and
+            agent‑assisted development. Interested in applying AI and rapid prototyping to improve products, workflows,
+            and user experiences.
           </p>
         </div>
 
@@ -611,10 +610,6 @@ function AboutMePage() {
           <header className="about-personality-header">
             <span className="eyebrow">Beyond the résumé</span>
             <h2 id="about-personality-title">How I work, learn, and explore</h2>
-            <p>
-              I’m collaborative, independently driven, and most energised by unfamiliar problems—whether I’m
-              building with a team, learning a new field, or travelling without a fixed route.
-            </p>
           </header>
 
           <div className="about-personality-grid">
@@ -647,7 +642,7 @@ function AboutMePage() {
                 <BookOpen size={22} />
               </span>
               <span className="about-personality-kicker">Ideas I return to</span>
-              <h3>Psychology, behaviour, and technology</h3>
+              <h3>Psychology, behavioural economics, and technology</h3>
               <p>
                 Psychology, behavioural economics, and technology fascinate me because they meet naturally in HCI.
                 I’m currently reading{' '}
@@ -900,7 +895,8 @@ function App() {
 
     if (
       currentHash === aboutMeHash ||
-      currentHash === howIBuiltThisHash
+      currentHash === howIBuiltThisHash ||
+      currentHash === aiAgentsHash
     ) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
@@ -923,7 +919,8 @@ function App() {
   const activeShowcase = projectShowcases[currentHash] || null;
   const isAboutMePage = currentHash === aboutMeHash;
   const isHowIBuiltThisPage = currentHash === howIBuiltThisHash;
-  const isDetailPage = isAboutMePage || isHowIBuiltThisPage;
+  const isAiAgentsPage = currentHash === aiAgentsHash;
+  const isDetailPage = isAboutMePage || isHowIBuiltThisPage || isAiAgentsPage;
   const closeShowcase = useCallback(() => {
     if (showcaseOpenedFromHistory.current) {
       window.history.back();
@@ -963,6 +960,8 @@ function App() {
       )}
       {isHowIBuiltThisPage ? (
         <HowIBuiltThisPage />
+      ) : isAiAgentsPage ? (
+        <AiAgentsPage />
       ) : isAboutMePage ? (
         <AboutMePage />
       ) : (
@@ -995,6 +994,12 @@ function App() {
             </HeroAsciiSafe>
           </div>
 
+          <section className="about-entry about-entry-center" aria-label="My AI Agents">
+            <AboutGlowCard
+              href={aiAgentsHash}
+              title="My AI Agents"
+            />
+          </section>
           <section className="about-entry" id="about" aria-label="How I built this website">
             <AboutGlowCard
               href={howIBuiltThisHash}

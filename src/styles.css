@@ -517,6 +517,8 @@ h1 {
 }
 
 .hero-editorial {
+  --hero-title-top: 40%;
+  --hero-title-height: clamp(240px, 30vw, 360px);
   position: relative;
   display: flex;
   flex-direction: column;
@@ -594,10 +596,10 @@ h1 {
 .hero-ascii {
   position: absolute;
   left: 50%;
-  top: 40%;
+  top: var(--hero-title-top);
   z-index: 6;
   width: min(1200px, 92vw);
-  height: clamp(240px, 30vw, 360px);
+  height: var(--hero-title-height);
   overflow: hidden;
   isolation: isolate;
   transform: translate(-50%, -50%);
@@ -798,9 +800,22 @@ h1 {
 }
 
 .about-me-page .cinematic-profile-shell {
-  --profile-card-height: 672px;
+  --profile-card-height: 520px;
   min-height: auto;
   padding-top: 28px;
+}
+
+.about-me-page .cinematic-copy {
+  top: 42px;
+}
+
+.about-me-page .cinematic-copy h2 {
+  margin-top: 0;
+  font-size: 92px;
+}
+
+.about-me-page .cinematic-copy p {
+  margin-top: 12px;
 }
 
 .about-personality {
@@ -810,29 +825,16 @@ h1 {
 
 .about-personality-header {
   display: grid;
-  grid-template-columns: minmax(0, 1.25fr) minmax(300px, 0.75fr);
-  gap: 24px 54px;
-  align-items: end;
   margin-bottom: 32px;
 }
 
-.about-personality-header .eyebrow {
-  grid-column: 1 / -1;
-}
-
 .about-personality-header h2 {
-  max-width: 760px;
+  max-width: none;
   color: rgba(249, 253, 255, 0.98);
   font-size: clamp(44px, 5vw, 72px);
   font-weight: 720;
   line-height: 0.96;
   letter-spacing: -0.035em;
-}
-
-.about-personality-header > p {
-  color: rgba(230, 243, 250, 0.68);
-  font-size: 17px;
-  line-height: 1.65;
 }
 
 .about-personality-grid {
@@ -1044,13 +1046,21 @@ h1 {
   );
   z-index: 8;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
+  gap: clamp(10px, 1.2vw, 16px);
   width: max-content;
   max-width: calc(100vw - 24px);
   padding: clamp(6px, 1.1vw, 12px);
   box-sizing: border-box;
   overflow: visible;
+}
+
+.about-entry-center {
+  right: auto;
+  left: 50%;
+  top: auto;
+  transform: translate(-50%, 0);
 }
 
 .about-glow-card {
@@ -3724,13 +3734,13 @@ h1 {
   }
 
   .hero-editorial {
+    --hero-title-top: 39%;
+    --hero-title-height: 240px;
     padding-top: max(16px, env(safe-area-inset-top));
   }
 
   .hero-ascii {
-    top: 39%;
     width: min(920px, 90vw);
-    height: 240px;
   }
 
   .glitch-checkbox {
@@ -3860,6 +3870,8 @@ h1 {
   }
 
   .hero-editorial {
+    --hero-title-top: 36%;
+    --hero-title-height: 220px;
     min-height: 100svh;
     padding: max(12px, env(safe-area-inset-top)) 0 0;
   }
@@ -3876,14 +3888,17 @@ h1 {
   }
 
   .hero-ascii {
-    top: 36%;
     width: calc(100vw - 24px);
-    height: 220px;
   }
 
   .about-entry {
     --about-card-width: clamp(104px, 22vw, 142px);
     right: calc(6px + var(--about-card-width) / 2);
+    padding: 4px;
+  }
+
+  .about-entry-center {
+    right: auto;
     padding: 4px;
   }
 
@@ -4014,17 +4029,11 @@ h1 {
   }
 
   .about-personality-header {
-    grid-template-columns: 1fr;
-    gap: 16px;
     margin-bottom: 24px;
   }
 
   .about-personality-header h2 {
     font-size: clamp(38px, 12vw, 52px);
-  }
-
-  .about-personality-header > p {
-    font-size: 16px;
   }
 
   .about-personality-grid {
@@ -4305,6 +4314,10 @@ h1 {
 @media (max-width: 420px) {
   .about-entry {
     --about-card-width: clamp(88px, 24vw, 104px);
+  }
+
+  .about-entry-center {
+    right: auto;
   }
 
   .about-book-popover {
